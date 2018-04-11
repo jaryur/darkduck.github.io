@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="如何正确实现一个Redis分布式锁   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能">
+<meta name="description" content="Redis分布式锁进化史   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能是错误的实">
 <meta name="keywords" content="技术，分布式锁">
 <meta property="og:type" content="article">
-<meta property="og:title" content="redis-distribute-lock">
+<meta property="og:title" content="Redis分布式锁进化史">
 <meta property="og:url" content="http://yoursite.com/2018/04/03/redis-distribute-lock/index.html">
 <meta property="og:site_name" content="程佳龠">
-<meta property="og:description" content="如何正确实现一个Redis分布式锁   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能">
+<meta property="og:description" content="Redis分布式锁进化史   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能是错误的实">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2018/04/03/images/unsafe-distribute-lock.png">
-<meta property="og:updated_time" content="2018-04-11T08:23:28.000Z">
+<meta property="og:updated_time" content="2018-04-11T08:34:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="redis-distribute-lock">
-<meta name="twitter:description" content="如何正确实现一个Redis分布式锁   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能">
+<meta name="twitter:title" content="Redis分布式锁进化史">
+<meta name="twitter:description" content="Redis分布式锁进化史   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能是错误的实">
 <meta name="twitter:image" content="http://yoursite.com/2018/04/03/images/unsafe-distribute-lock.png">
 
 
@@ -128,7 +128,7 @@
 
 
 
-  <title>redis-distribute-lock | 程佳龠</title>
+  <title>Redis分布式锁进化史 | 程佳龠</title>
   
 
 
@@ -282,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">redis-distribute-lock</h1>
+          <h1 class="post-title" itemprop="name headline">Redis分布式锁进化史</h1>
         
 
         <div class="post-meta">
@@ -354,7 +354,7 @@
       
 
       
-        <h2 id="如何正确实现一个Redis分布式锁"><a href="#如何正确实现一个Redis分布式锁" class="headerlink" title="如何正确实现一个Redis分布式锁"></a>如何正确实现一个Redis分布式锁</h2><p>   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。<br>   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能是错误的实现，包括在代码中，如果不能正确的使用分布式锁，可能造成严重的生产环境故障，本文主要对目前遇到的各种分布式锁以及其缺陷做了一个整理，并提供一个正确的Redis分布式锁实现，如有不当，欢迎指正。</p>
+        <h2 id="Redis分布式锁进化史"><a href="#Redis分布式锁进化史" class="headerlink" title="Redis分布式锁进化史"></a>Redis分布式锁进化史</h2><p>   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。<br>   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能是错误的实现，包括在代码中，如果不能正确的使用分布式锁，可能造成严重的生产环境故障，本文主要对目前遇到的各种分布式锁以及其缺陷做了一个整理，并对如何选择合适的Redis分布式锁给出建议。</p>
 <p>###各个版本的Redis分布式锁</p>
 <ul>
 <li><p>V1.0</p>
@@ -633,7 +633,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何正确实现一个Redis分布式锁"><span class="nav-number">1.</span> <span class="nav-text">如何正确实现一个Redis分布式锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis分布式锁进化史"><span class="nav-number">1.</span> <span class="nav-text">Redis分布式锁进化史</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
