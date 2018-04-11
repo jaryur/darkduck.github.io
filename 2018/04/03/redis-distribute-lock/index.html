@@ -88,7 +88,7 @@
 <meta property="og:description" content="近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。 但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能是错误的实现，包括在代码中，如果不能正确的使">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2018/04/03/images/unsafe-distribute-lock.png">
-<meta property="og:updated_time" content="2018-04-11T10:49:08.000Z">
+<meta property="og:updated_time" content="2018-04-11T11:13:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis分布式锁进化史">
 <meta name="twitter:description" content="近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。 但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能是错误的实现，包括在代码中，如果不能正确的使">
@@ -438,6 +438,11 @@
 <p><strong>Efficiency</strong>(效率)：只需要一个Client来完成操作，不需要重复执行，这是一个对宽松的分布式锁，只需要保证锁的活性即可；</p>
 <p><strong>Correctness</strong>(正确性)：多个Client保证严格的互斥性，不允许出现同时持有锁或者对同时操作同一资源，这种场景下需要在锁的选择和使用上更加严格，同时在业务代码上尽量做到幂等</p>
 <p>在Redis分布式锁的实现上还有很多问题等待解决，我们需要认识到这些问题并清楚如何正确实现一个Redis<br>分布式锁，然后在工作中合理的选择和正确的使用分布式锁。</p>
+<p><strong>参考</strong></p>
+<p><a href="http://antirez.com/news/101" target="_blank" rel="noopener">Is Redlock safe?</a></p>
+<p><a href="http://zhangtielei.com/posts/blog-redlock-reasoning.html" target="_blank" rel="noopener">基于Redis的分布式锁到底安全吗</a></p>
+<p><a href="http://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html" target="_blank" rel="noopener">How to do distributed locking</a></p>
+<p><a href="https://redis.io/topics/distlock" target="_blank" rel="noopener">Distributed locks with Redis</a></p>
 
       
     </div>

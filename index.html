@@ -436,6 +436,11 @@
 <p><strong>Efficiency</strong>(效率)：只需要一个Client来完成操作，不需要重复执行，这是一个对宽松的分布式锁，只需要保证锁的活性即可；</p>
 <p><strong>Correctness</strong>(正确性)：多个Client保证严格的互斥性，不允许出现同时持有锁或者对同时操作同一资源，这种场景下需要在锁的选择和使用上更加严格，同时在业务代码上尽量做到幂等</p>
 <p>在Redis分布式锁的实现上还有很多问题等待解决，我们需要认识到这些问题并清楚如何正确实现一个Redis<br>分布式锁，然后在工作中合理的选择和正确的使用分布式锁。</p>
+<p><strong>参考</strong></p>
+<p><a href="http://antirez.com/news/101" target="_blank" rel="noopener">Is Redlock safe?</a></p>
+<p><a href="http://zhangtielei.com/posts/blog-redlock-reasoning.html" target="_blank" rel="noopener">基于Redis的分布式锁到底安全吗</a></p>
+<p><a href="http://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html" target="_blank" rel="noopener">How to do distributed locking</a></p>
+<p><a href="https://redis.io/topics/distlock" target="_blank" rel="noopener">Distributed locks with Redis</a></p>
 
           
         
