@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="技术，分布式锁," />
 
 
 
@@ -79,13 +79,20 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="程佳龠">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="如何正确实现一个Redis分布式锁   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能">
+<meta name="keywords" content="技术，分布式锁">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis-distribute-lock">
+<meta property="og:url" content="http://yoursite.com/2018/04/03/redis-distribute-lock/index.html">
 <meta property="og:site_name" content="程佳龠">
+<meta property="og:description" content="如何正确实现一个Redis分布式锁   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/04/03/images/unsafe-distribute-lock.png">
+<meta property="og:updated_time" content="2018-04-11T08:23:28.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="程佳龠">
+<meta name="twitter:title" content="redis-distribute-lock">
+<meta name="twitter:description" content="如何正确实现一个Redis分布式锁   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能">
+<meta name="twitter:image" content="http://yoursite.com/2018/04/03/images/unsafe-distribute-lock.png">
 
 
 
@@ -115,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/04/03/redis-distribute-lock/"/>
 
 
 
 
 
-  <title>程佳龠</title>
+  <title>redis-distribute-lock | 程佳龠</title>
   
 
 
@@ -140,8 +147,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -244,9 +250,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -276,9 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/03/redis-distribute-lock/" itemprop="url">redis-distribute-lock</a></h1>
+          <h1 class="post-title" itemprop="name headline">redis-distribute-lock</h1>
         
 
         <div class="post-meta">
@@ -350,9 +354,7 @@
       
 
       
-        
-          
-            <h2 id="如何正确实现一个Redis分布式锁"><a href="#如何正确实现一个Redis分布式锁" class="headerlink" title="如何正确实现一个Redis分布式锁"></a>如何正确实现一个Redis分布式锁</h2><p>   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。<br>   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能是错误的实现，包括在代码中，如果不能正确的使用分布式锁，可能造成严重的生产环境故障，本文主要对目前遇到的各种分布式锁以及其缺陷做了一个整理，并提供一个正确的Redis分布式锁实现，如有不当，欢迎指正。</p>
+        <h2 id="如何正确实现一个Redis分布式锁"><a href="#如何正确实现一个Redis分布式锁" class="headerlink" title="如何正确实现一个Redis分布式锁"></a>如何正确实现一个Redis分布式锁</h2><p>   近两年来微服务变得越来越热门，越来越多的应用部署在分布式环境中，在分布式环境中，数据一致性是一直以来需要关注并且去解决的问题，分布式锁也就成为了一种广泛使用的技术，常用的分布式实现方式为Redis，Zookeeper，其中Redis分布式锁的使用更加广泛。<br>   但是在工作和网络上看到过各个版本的Redis分布式锁实现，每种实现都有一些不严谨的地方，甚至有可能是错误的实现，包括在代码中，如果不能正确的使用分布式锁，可能造成严重的生产环境故障，本文主要对目前遇到的各种分布式锁以及其缺陷做了一个整理，并提供一个正确的Redis分布式锁实现，如有不当，欢迎指正。</p>
 <p>###各个版本的Redis分布式锁</p>
 <ul>
 <li><p>V1.0</p>
@@ -450,8 +452,6 @@
 </li>
 </ol>
 
-          
-        
       
     </div>
     
@@ -466,179 +466,48 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/01/to-my-2017/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="程佳龠">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/01/to-my-2017/" itemprop="url">写给不平凡的2017</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-01T18:21:40+08:00">
-                2018-01-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/往事/" itemprop="url" rel="index">
-                    <span itemprop="name">往事</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/技术，分布式锁/" rel="tag"># 技术，分布式锁</a>
           
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
+      
+        <div class="post-widgets">
         
-          
-            <p>  2017年犹如人生新的一章，划上了句号，这一年有时候觉得很长，有时候觉得平淡到如同开水，有时候觉得焦虑，有时候甚至灵魂都没有喘息的机会，领悟到了很多，给自己时间让学会了去面对和思考自己一直在逃避的东西。</p>
-<ul>
-<li><p>换了份新工作</p>
-<p>逃离了呆了五年的广州，想起当时被迫来到这个陌生的城市，经历过的荒诞的生活。在上家公司呆了两年多，大多时候很忙碌却总心生恐惧感，不仅来自于对职业生涯的茫然，还有来自于现实不经意间提醒你这个世界是多么的残酷，来自于灵魂深处离自己的理想渐行渐远，怕有一天完全忘记旧日那个意气风发的少年。</p>
-<p>于是追随着逃离北上广的浪潮，来到了杭州，这在一年前，甚至于几个月前都是一直没有考虑过得事情，就这样发生了。新的环境，新的生活，需要自己去适应，去把握，希望这一次我可以面对一切更加成熟。</p>
-</li>
-</ul>
-<ul>
-<li><p>看了很多的书</p>
-<p>从16年至17年中强迫自己花更多的时间在阅读，上学时候犹记得各种名言警句：读书使人明智，书是人类进步的阶梯等等，直到今日才明白其真正的意义，真理往往隐藏在那些平淡无奇的话语中，不禁感慨道真正理解那些平淡无奇的真理如同大智若愚一样，是多么难得一件事情。</p>
-<p>读了《中国通史》，才知道在时间面前，个体是多么的渺小；读了哲学入门的书籍，开始去思考生存与生活的真正意义；读自我管理的书籍，加强自我驱动力，目标感；看经济学，让自己遇到问题有新的角度看待问题；学会关注社会问题，而不是自我隔离，这样的逃避最终只能让自己成为一个愤世嫉俗，不善言谈，思维简单的独立个体，我无时无刻不处在在一个大的社会，也必须用一个社会个体的身份和社会相处。</p>
-<p>开始学习分布式，像发现新大陆一样，不断探索新的知识；重新认识并发编程，不论是抽象的理论，清晰的代码，让自己从一个更高的角度构筑知识体系；重新读了一遍《如何阅读一本书》，试着写读书笔记，做技术总结，一点点的进步。下一步需要开始写博客，用文字记录下生活的轨迹。</p>
-</li>
-</ul>
-<ul>
-<li><p>重新认识了自己</p>
-<p>我深知自己身上的种种弊病，缺一直不愿意去做出改变，像是每一次改变都要经历极大的切肤之痛，也让自己总是通过麻木自己来逃避一些问题，直到淡出生活抑或用一种快刀斩乱麻的方式迅速处理掉，至此便可以永远抛之脑后。总的来说，我是一个不会独立处理问题的人。今日的种种性格和往日的生活经历密不可分，儿时的经历，上学时遗留的某些挫败感似乎还久久盘旋在脑海上空，所以当别人揭我短，戳我痛处，便会种恨之入骨，记恨在心，哈哈哈，竟讲自己描绘的如此可怜……；犹记得自己和朋友交谈时说着自己不愿意去过那种一眼望到头的日子，可回想近五年的时光，虽然已经时快时慢的在成长，更多的时候却像极了自己口中一眼望到头的那般讽刺，这也是自己为何让自己学会自我管理，重新塑造自己，跟过去那个丑陋不堪的自己说No。</p>
-</li>
-</ul>
-<ul>
-<li><p>写在2018年初</p>
-<p>犹记得大四那年，无意间翻到自己大一时在一个傍晚时分，独自在宿舍开着台灯，拿出一张白纸，上面记录着当初自己给大学四年的种种美好的规划，那时的我还是个充满梦想和憧憬的少年，而四年后的回想起当年的自己竟惊讶到羞愧。往时今日，何曾相似，除了生活更加残酷，但不甘心的我，偏要用一个更美好的自己面对不美好的现实。希望2018年的自己如同当年的追梦少年，出走多年，不忘初心。</p>
-</li>
-</ul>
-
-          
+          <div class="wp_rating">
+            <div id="wpac-rating"></div>
+          </div>
         
+
+        
+
+        
+        </div>
       
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
       
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/01/to-my-2017/" rel="next" title="写给不平凡的2017">
+                <i class="fa fa-chevron-left"></i> 写给不平凡的2017
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
 
       
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -648,10 +517,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -659,6 +529,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -679,8 +553,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -740,6 +623,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何正确实现一个Redis分布式锁"><span class="nav-number">1.</span> <span class="nav-text">如何正确实现一个Redis分布式锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -867,6 +766,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
 
   
 
@@ -922,6 +825,23 @@
 
   
   
+  <script type="text/javascript">
+  wpac_init = window.wpac_init || [];
+  wpac_init.push({widget: 'Rating', id: ,
+    el: 'wpac-rating',
+    color: 'fc6423'
+  });
+  (function() {
+    if ('WIDGETPACK_LOADED' in window) return;
+    WIDGETPACK_LOADED = true;
+    var mc = document.createElement('script');
+    mc.type = 'text/javascript';
+    mc.async = true;
+    mc.src = '//embed.widgetpack.com/widget.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+  })();
+  </script>
+
 
   
 
