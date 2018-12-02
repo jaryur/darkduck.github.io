@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="redis, best-practice," />
 
 
 
@@ -80,15 +80,16 @@
 
 
 <meta name="description" content="Redis实践中的一些总结和建议redis从2009年诞生到现在已经走过将近10年，从最开始大家在讨论nosql和传统关系数据库孰优孰劣，到现在大家谈起分布式锁，缓存纷纷选择Redis作为其第一选择，服务端面试中Redis也作为一项必备能力，而如今Redis 5.0已经发布，越来越多的新特性被加入，我完成的观察到并参与了了一项新的开源产品从走入大家的视野到被接受，之后再流行的整个过程，也见证了me">
+<meta name="keywords" content="redis, best-practice">
 <meta property="og:type" content="article">
-<meta property="og:title" content="程佳龠">
-<meta property="og:url" content="http://yoursite.com/2018/04/13/:2018-:12-:02-:practice_tips_redis/index.html">
+<meta property="og:title" content="Redis实践中的一些总结和建议">
+<meta property="og:url" content="http://yoursite.com/2018/12/01/:2018-:12-:02-:practicing_tips_for_redis/index.html">
 <meta property="og:site_name" content="程佳龠">
 <meta property="og:description" content="Redis实践中的一些总结和建议redis从2009年诞生到现在已经走过将近10年，从最开始大家在讨论nosql和传统关系数据库孰优孰劣，到现在大家谈起分布式锁，缓存纷纷选择Redis作为其第一选择，服务端面试中Redis也作为一项必备能力，而如今Redis 5.0已经发布，越来越多的新特性被加入，我完成的观察到并参与了了一项新的开源产品从走入大家的视野到被接受，之后再流行的整个过程，也见证了me">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-02T16:13:44.000Z">
+<meta property="og:updated_time" content="2018-12-02T16:20:15.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="程佳龠">
+<meta name="twitter:title" content="Redis实践中的一些总结和建议">
 <meta name="twitter:description" content="Redis实践中的一些总结和建议redis从2009年诞生到现在已经走过将近10年，从最开始大家在讨论nosql和传统关系数据库孰优孰劣，到现在大家谈起分布式锁，缓存纷纷选择Redis作为其第一选择，服务端面试中Redis也作为一项必备能力，而如今Redis 5.0已经发布，越来越多的新特性被加入，我完成的观察到并参与了了一项新的开源产品从走入大家的视野到被接受，之后再流行的整个过程，也见证了me">
 
 
@@ -119,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/04/13/:2018-:12-:02-:practice_tips_redis/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/12/01/:2018-:12-:02-:practicing_tips_for_redis/"/>
 
 
 
 
 
-  <title> | 程佳龠</title>
+  <title>Redis实践中的一些总结和建议 | 程佳龠</title>
   
 
 
@@ -262,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/13/:2018-:12-:02-:practice_tips_redis/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/01/:2018-:12-:02-:practicing_tips_for_redis/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jaryur">
@@ -279,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">Redis实践中的一些总结和建议</h1>
         
 
         <div class="post-meta">
@@ -291,8 +292,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-13T13:44:56+08:00">
-                2018-04-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-01T23:00:34+08:00">
+                2018-12-01
               </time>
             
 
@@ -301,6 +302,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术实践/" itemprop="url" rel="index">
+                    <span itemprop="name">技术实践</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -386,6 +409,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/redis-best-practice/" rel="tag"># redis, best-practice</a>
+          
+        </div>
+      
 
       
       
@@ -407,8 +436,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/03/redis-distribute-lock/" rel="next" title="Redis分布式锁进化史">
-                <i class="fa fa-chevron-left"></i> Redis分布式锁进化史
+              <a href="/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/" rel="next" title="关于Zero Copy的一些简单总结">
+                <i class="fa fa-chevron-left"></i> 关于Zero Copy的一些简单总结
               </a>
             
           </div>
@@ -416,10 +445,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/" rel="prev" title="关于Zero Copy的一些简单总结">
-                关于Zero Copy的一些简单总结 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -496,7 +521,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -507,7 +532,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -518,7 +543,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
