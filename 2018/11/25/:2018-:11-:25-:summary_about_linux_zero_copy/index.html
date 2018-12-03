@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://yoursite.com/images/1543750730518.jpg">
 <meta property="og:image" content="http://yoursite.com/images/37c15098760b7d8cd0e9d974ddd2b46d.jpeg">
 <meta property="og:image" content="http://yoursite.com/images/180879d0ee95d3b22f9061b46cdabb13.jpeg">
-<meta property="og:updated_time" content="2018-12-02T16:32:39.000Z">
+<meta property="og:updated_time" content="2018-12-02T16:34:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于Zero Copy的一些简单总结">
 <meta name="twitter:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新复习了下Linux下IO的一些知识。 几种IO介绍Linux">
@@ -570,7 +570,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -581,7 +581,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
