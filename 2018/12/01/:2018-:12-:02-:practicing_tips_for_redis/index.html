@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="程佳龠">
 <meta property="og:description" content="redis从2009年诞生到现在已经走过将近10年，从最开始大家在讨论nosql和传统关系数据库孰优孰劣，到现在大家谈起分布式锁，缓存纷纷选择Redis作为其第一选择，服务端面试中Redis也作为一项必备能力，而如今Redis 5.0已经发布，越来越多的新特性被加入，我完成的观察到并参与了了一项新的开源产品从走入大家的视野到被接受，之后再流行的整个过程，也见证了memcache的日薄西山。 但是在">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-02T16:32:03.000Z">
+<meta property="og:updated_time" content="2018-12-03T12:21:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis实践中的一些总结和建议">
 <meta name="twitter:description" content="redis从2009年诞生到现在已经走过将近10年，从最开始大家在讨论nosql和传统关系数据库孰优孰劣，到现在大家谈起分布式锁，缓存纷纷选择Redis作为其第一选择，服务端面试中Redis也作为一项必备能力，而如今Redis 5.0已经发布，越来越多的新特性被加入，我完成的观察到并参与了了一项新的开源产品从走入大家的视野到被接受，之后再流行的整个过程，也见证了memcache的日薄西山。 但是在">
@@ -354,8 +354,21 @@
       
         <p>redis从2009年诞生到现在已经走过将近10年，从最开始大家在讨论nosql和传统关系数据库孰优孰劣，到现在大家谈起分布式锁，缓存纷纷选择Redis作为其第一选择，服务端面试中Redis也作为一项必备能力，而如今Redis 5.0已经发布，越来越多的新特性被加入，我完成的观察到并参与了了一项新的开源产品从走入大家的视野到被接受，之后再流行的整个过程，也见证了memcache的日薄西山。<br> 但是在工作中发现很多人只是了解一些Redis的基本使用，也并未完整的阅读过Redis的官方文档，对于一些命令的熟悉和使用，不同场景下也滥用不合理的数据结构，对一些新的特性似乎也不会去关注。鉴于自己对Redis的一些了解和实践经验，并收集了网络上一些资料，总结了一些使用建议。</p>
 <h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><ol>
-<li>SET key value [expiration EX seconds|PX milliseconds] [NX|XX]</li>
-<li>bitmap<h2 id="使用建议"><a href="#使用建议" class="headerlink" title="使用建议"></a>使用建议</h2></li>
+<li><p>SET key value [expiration EX seconds|PX milliseconds][NX|XX]</p>
+<p>Redis 2.6.12版本后的Set命令支持过期时间等参数，不必再像以前一样分为set和expire两个命令</p>
+</li>
+<li><p>bitmap</p>
+<ul>
+<li><p>如果要标记大量用户的某个状态值，可以考虑使用bitmap</p>
+</li>
+<li><p>bitmap的另外一个应用是基于redis的<a href="https://github.com/Baqend/Orestes-Bloomfilter" target="_blank" rel="noopener">bloom filter</a></p>
+</li>
+</ul>
+</li>
+<li><p>stream</p>
+<p>Redis4开始提供的新的数据结构，可以理解成轻量级的kafka steam，主要解决了pub/sub无法保证通知处理成功和blocked list无法多个client消费的问题，具体点击<a href="https://redis.io/topics/streams-intro" target="_blank" rel="noopener">此处</a>查看topic。</p>
+<p> 如果想实现一个简单的聊天室，可以尝试下steam。</p>
+<h2 id="使用建议"><a href="#使用建议" class="headerlink" title="使用建议"></a>使用建议</h2></li>
 <li><p>合理分配过期时间<br>不管是将Redis作为缓存，还是存储，如果不愿意看到内存被慢慢消耗殆尽，最后只能扩容或者人工介入，就给自己的key设置一个合理的过期时间。<br> 当把Redis作为缓存时，更要预估自己的数据量和数据大小，选择一个合理的过期时间。</p>
 </li>
 <li><p>多个操作使用Pinepine</p>
@@ -380,17 +393,25 @@
 </li>
 <li><p>禁用keys<br>很基本的Redis使用常识，可以通过rename-command来将一些类似的命令重命名，实现disable的效果</p>
 <ol start="6">
-<li>选用lua script<br>如果要保证多个操作的原子性，可以选择使用lua脚本</li>
+<li><p>选用lua script<br>如果要保证多个操作的原子性，可以选择使用lua脚本</p>
+</li>
+<li><p>config set parameter value</p>
+<p>redis 2.0后提供了config set 命令来动态修改一些运行参数而不必重启redis，目前已经支持动态修改maxmemory，可以通过CONFIG GET * 查看支持动态修改的参数列表</p>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2></li>
 </ol>
 </li>
-<li><p>config set </p>
-<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2></li>
 <li>key的命名<br>合理的命名自己的key，不能在查看数据时可读性更强，也更便于统计和管理</li>
 <li>key name的长度<br>预估key的存活数量，如果key的数量可能达到百万级别，就需要考虑key的名字过长而导致占用太多的存储空间，我在一个消息系统中使用redis存储消息阅读量，但是后面由于消息量过多，导致name的占用空间达到几百M。<br>例如，保存用户的基本信息可以使用u:${id}</li>
-<li><p>不滥用Lua Script<br>由于Redis是单线程，在QPS很高的情况下，过多的lua脚本执行，特别是内部包含较多业务逻辑处理的情况下，会对Redis性能产生很大的影响。曾经参与过的直播业务的生产环境中，我们在Lua脚本中对送礼物触发的的积分和活动信息的有较多的逻辑处理（20行左右），导致Redis负载100%，所以在排查时Lua脚本有可能是负载较高的元凶之一。</p>
-<ol start="4">
+<li>不滥用Lua Script<br>由于Redis是单线程，在QPS很高的情况下，过多的lua脚本执行，特别是内部包含较多业务逻辑处理的情况下，会对Redis性能产生很大的影响。曾经参与过的直播业务的生产环境中，我们在Lua脚本中对送礼物触发的的积分和活动信息的有较多的逻辑处理（20行左右），导致Redis负载100%，所以在排查时Lua脚本有可能是负载较高的元凶之一。<ol start="4">
 <li>关注内存和slowlog</li>
 </ol>
+<ul>
+<li>通过info memory查看内存的分配和使用大小，碎片等情况</li>
+<li>slowlog get N 查看最近几条执行较慢的命令</li>
+<li>通过redis-cli –bigkeys 通过采样scan元素较多的key，不会一直阻塞redis执行</li>
+</ul>
+</li>
+<li><p>完善中。。。。</p>
 <p>面对一款优秀开源产品，我们除了要了解它的基本使用，也要擅于运用才能更好发挥其作用，否则会有不必要的麻烦，甚至适得其反。当然如果能深入了解其内部运行机制，知其然并知其所以然，甚至基于此创造出更加优秀的开源产品，就符合程序员的hacker精神。</p>
 </li>
 </ol>
