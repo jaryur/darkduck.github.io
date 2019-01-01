@@ -2,26 +2,24 @@
 
 
 
+
+
+
+
+
+
+
+
+
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next muse use-motion" lang="zh-CN">
 <head>
   <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
 
 
 
@@ -38,37 +36,6 @@
 
 
 
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Linux," />
 
 
 
@@ -79,41 +46,40 @@
 
 
 
-<meta name="description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新复习了下Linux下IO的一些知识。 几种IO介绍Linux">
-<meta name="keywords" content="Linux">
-<meta property="og:type" content="article">
-<meta property="og:title" content="关于Zero Copy的一些简单总结">
-<meta property="og:url" content="http://yoursite.com/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/index.html">
-<meta property="og:site_name" content="程佳龠">
-<meta property="og:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新复习了下Linux下IO的一些知识。 几种IO介绍Linux">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
-<meta property="og:image" content="http://yoursite.com/images/4ee3c66cc829db7ce5141cc3f36da35e.jpeg">
-<meta property="og:image" content="http://yoursite.com/images/1543750730518.jpg">
-<meta property="og:image" content="http://yoursite.com/images/37c15098760b7d8cd0e9d974ddd2b46d.jpeg">
-<meta property="og:image" content="http://yoursite.com/images/180879d0ee95d3b22f9061b46cdabb13.jpeg">
-<meta property="og:updated_time" content="2018-12-02T16:34:05.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="关于Zero Copy的一些简单总结">
-<meta name="twitter:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新复习了下Linux下IO的一些知识。 几种IO介绍Linux">
-<meta name="twitter:image" content="http://yoursite.com/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
 
 
 
-<script type="text/javascript" id="hexo.configurations">
+
+
+
+
+<script id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
     scheme: 'Muse',
-    version: '5.1.3',
+    version: '6.7.0',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
     algolia: {
       applicationID: '',
       apiKey: '',
@@ -125,14 +91,46 @@
 </script>
 
 
-
-  <link rel="canonical" href="http://yoursite.com/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/"/>
-
+  
 
 
 
 
-  <title>关于Zero Copy的一些简单总结 | 程佳龠</title>
+  <meta name="description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。 几种IO介绍Linux">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Zero Copy的一些简单总结">
+<meta property="og:url" content="http://jaryur.github.io/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/index.html">
+<meta property="og:site_name" content="程先森的N度空间">
+<meta property="og:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。 几种IO介绍Linux">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://jaryur.github.io/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
+<meta property="og:image" content="http://jaryur.github.io/images/4ee3c66cc829db7ce5141cc3f36da35e.jpeg">
+<meta property="og:image" content="http://jaryur.github.io/images/1543750730518.jpg">
+<meta property="og:image" content="http://jaryur.github.io/images/37c15098760b7d8cd0e9d974ddd2b46d.jpeg">
+<meta property="og:image" content="http://jaryur.github.io/images/180879d0ee95d3b22f9061b46cdabb13.jpeg">
+<meta property="og:updated_time" content="2019-01-01T10:54:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于Zero Copy的一些简单总结">
+<meta name="twitter:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。 几种IO介绍Linux">
+<meta name="twitter:image" content="http://jaryur.github.io/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://jaryur.github.io/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>关于Zero Copy的一些简单总结 | 程先森的N度空间</title>
   
 
 
@@ -142,9 +140,38 @@
 
 
 
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   
   
@@ -156,23 +183,22 @@
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
+  <div class="site-meta">
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">程佳龠</span>
+        <span class="site-title">程先森的N度空间</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-      
-        <p class="site-subtitle">愿你出走多年，归来仍是少年</p>
-      
+    
+    
   </div>
 
   <div class="site-nav-toggle">
-    <button>
+    <button aria-label="切换导航栏">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -180,65 +206,106 @@
   </div>
 </div>
 
-<nav class="site-nav">
-  
 
+
+<nav class="site-nav">
   
     <ul id="menu" class="menu">
       
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
         
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            关于
-          </a>
-        </li>
-      
         
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
       
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>首页</a>
+
+  </li>
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
-          </a>
-        </li>
-      
         
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            归档
-          </a>
-        </li>
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
       
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br/>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>归档</a>
+
+  </li>
 
       
+      
     </ul>
+  
+
+  
+    
+
   
 
   
@@ -246,12 +313,20 @@
 
 
 
- </div>
+  
+
+
+
+</div>
     </header>
+
+    
+
 
     <main id="main" class="main">
       <div class="main-inner">
         <div class="content-wrap">
+          
           <div id="content" class="content">
             
 
@@ -264,21 +339,23 @@
   
   
 
+  
+
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/">
+    <link itemprop="mainEntityOfPage" href="http://jaryur.github.io/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/"/>
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jaryur">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="程先森"/>
+      <meta itemprop="description" content="愿你出走多年，归来仍是少年"/>
+      <meta itemprop="image" content="/images/avatar.gif"/>
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="程佳龠">
+      <meta itemprop="name" content="程先森的N度空间"/>
     </span>
 
     
@@ -286,11 +363,20 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">关于Zero Copy的一些简单总结</h1>
+          <h1 class="post-title" itemprop="name headline">关于Zero Copy的一些简单总结
+
+              
+            
+          </h1>
         
 
         <div class="post-meta">
           <span class="post-time">
+
+            
+            
+            
+
             
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -298,13 +384,30 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-25T16:00:34+08:00">
-                2018-11-25
-              </time>
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-25 16:00:34" itemprop="dateCreated datePublished" datetime="2018-11-25T16:00:34+08:00">2018-11-25</time>
             
 
             
+              
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-01 18:54:40" itemprop="dateModified" datetime="2019-01-01T18:54:40+08:00">2019-01-01</time>
+              
             
           </span>
 
@@ -320,11 +423,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
 
                 
                 
@@ -333,6 +432,18 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/#comments" itemprop="discussionUrl">
+                
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -358,7 +469,7 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新复习了下Linux下IO的一些知识。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。</p>
 <h2 id="几种IO介绍"><a href="#几种IO介绍" class="headerlink" title="几种IO介绍"></a>几种IO介绍</h2><h3 id="Linux中文件访问的几种方式"><a href="#Linux中文件访问的几种方式" class="headerlink" title="Linux中文件访问的几种方式"></a>Linux中文件访问的几种方式</h3><ol>
 <li><p>标准文件访问 （缓存IO）<br>用户访问磁盘中数据时，通常通过read()或者write()调用完成，操作系统会先将数据读取或者写入到page cache中，然后再写入磁盘，Linux默认写入磁盘方式为deferred write </p>
 <p><img src="/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg" alt=""> </p>
@@ -413,6 +524,13 @@
 <p>| 350MB | 3631 | 1762 | </p>
 <p>| 700MB | 13498 | 4422 | </p>
 <p>| 1GB | 18399 | 8537 | </p>
+<ol start="2">
+<li><p>通过<strong>java.nio.channels.FileChannel</strong>的<strong>(MapMode mode,long position, long size)</strong>实现mmap，相对于传统的BIO等文件操作尤其是大文件的读写，性能有较大的提升。</p>
+<blockquote>
+<p>Java 原生API目前没有Direct IO的实现，目前gitlab上有<a href="https://github.com/java-native-access/jna" target="_blank" rel="noopener">JNA</a>的库，可以基于此库实现Linux DirectIO</p>
+</blockquote>
+</li>
+</ol>
 <h2 id="Zero-Copy的实际应用场景"><a href="#Zero-Copy的实际应用场景" class="headerlink" title="Zero Copy的实际应用场景"></a>Zero Copy的实际应用场景</h2><ol>
 <li>Nginx，在Nginx性能优化中，有一个配置是sendfile on/off,以下是官方文档的说明 </li>
 </ol>
@@ -421,9 +539,19 @@
 </blockquote>
 <p>当nginx在处理静态资源请求时，开启sendfile对性能有一定的提升，当然还需要根据实际场景，结合其他配置使用。可以通过<a href="https://thoughts.t37.net/nginx-optimization-understanding-sendfile-tcp-nodelay-and-tcp-nopush-c55cdd276765" target="_blank" rel="noopener">Optimisations Nginx, bien comprendre sendfile, tcpnodelay et tcpnopush</a>详细了解 </p>
 <ol start="2">
-<li><p><strong>C10k</strong>问题的解决中，Zero Copy也是其中的一个要点，具体可以通过<a href="http://www.kegel.com/c10k.html#top" target="_blank" rel="noopener">The C10K problem</a>查看 </p>
+<li><p><strong>C10k</strong>问题的解决中，Zero Copy对于IO的提升是一个关键点，具体可以通过<a href="http://www.kegel.com/c10k.html#top" target="_blank" rel="noopener">The C10K problem</a>查看 </p>
 </li>
-<li><p>Kafka，Netty等中间件 </p>
+<li><p>Kafka,Netty,RocketMQ等中间件 </p>
+<p>消息中间件中对于消息持久化通常保存在文件中，对于一个高吞吐量的消息中间件，对文件读写通常采用以下方案（Java为例）</p>
+<ul>
+<li><p>NIO：主要在java.nio包中，通过FileChannel相关方法实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FileChannel fileChannel = <span class="keyword">new</span> RandomAccessFile(<span class="keyword">new</span> File(<span class="string">"message.data"</span>), <span class="string">"rw"</span>).getChannel();</span><br><span class="line"><span class="comment">//然后通过read和write方法写入数据</span></span><br><span class="line">fileChannel.read(ByteBuffer[] dsts, <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span><br><span class="line">fileChannel.write(ByteBuffer[] srcs, <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>MMAP</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MappedByteBuffer mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, filechannel.size();</span><br></pre></td></tr></table></figure>
+<p>RocketMQ默认采用异步mmap的方式实现消息刷盘</p>
+</li>
+</ul>
 </li>
 </ol>
 <p>参考资料 </p>
@@ -431,12 +559,18 @@
 
       
     </div>
+
+    
+
     
     
     
 
     
 
+    
+      
+    
     
 
     
@@ -451,18 +585,6 @@
       
 
       
-      
-        <div class="post-widgets">
-        
-          <div class="wp_rating">
-            <div id="wpac-rating"></div>
-          </div>
-        
-
-        
-
-        
-        </div>
       
       
 
@@ -498,18 +620,18 @@
   </article>
 
 
-
-    <div class="post-spread">
-      
-    </div>
   </div>
 
 
           </div>
           
 
-
-          
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
 
   
 
@@ -544,73 +666,108 @@
         </ul>
       
 
-      <section class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">Jaryur</p>
-              <p class="site-description motion-element" itemprop="description"></p>
+              <p class="site-author-name" itemprop="name">程先森</p>
+              <p class="site-description motion-element" itemprop="description">愿你出走多年，归来仍是少年</p>
           </div>
 
-          <nav class="site-state motion-element">
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
 
-            
-              <div class="site-state-item site-state-posts">
               
-                <a href="/archives/">
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
               
-                  <span class="site-state-item-count">4</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
 
-            
               
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
               
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">8</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
+            </nav>
           
 
           
 
           
+
           
 
           
           
 
+          
+            
+          
           
 
         </div>
-      </section>
+      </div>
 
       
       <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
           <div class="post-toc">
 
             
-              
+            
+            
             
 
             
@@ -618,7 +775,7 @@
             
 
           </div>
-        </section>
+        </div>
       <!--/noindex-->
       
 
@@ -634,11 +791,13 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
-  <span class="with-love">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Jaryur</span>
+  <span class="author" itemprop="copyrightHolder">程先森</span>
+
+  
 
   
 </div>
@@ -659,6 +818,7 @@
 
 
 
+
         
       </div>
     </footer>
@@ -672,11 +832,14 @@
 
     
 
+    
+
+    
   </div>
 
   
 
-<script type="text/javascript">
+<script>
   if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
     window.Promise = null;
   }
@@ -690,7 +853,6 @@
 
 
 
-  
 
 
 
@@ -703,43 +865,27 @@
 
 
 
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
+
+
+
+
 
   
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
 
   
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
 
   
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
 
   
 
 
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+  <script src="/js/src/utils.js?v=6.7.0"></script>
 
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+  <script src="/js/src/motion.js?v=6.7.0"></script>
 
 
 
@@ -747,40 +893,48 @@
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
 
 
 
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
 
 
 
   
 
+  
+    <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+  
 
+  
+    <script>
+      var disqus_config = function () {
+        this.page.url = "http://jaryur.github.io/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/";
+        this.page.identifier = "2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/";
+        this.page.title = '关于Zero Copy的一些简单总结';
+        };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
   
 
 
 
 
-	
-
-
-
-
 
   
-
-
-
-
-
-  
-
 
 
 
@@ -805,24 +959,18 @@
   
 
   
-  
-  <script type="text/javascript">
-  wpac_init = window.wpac_init || [];
-  wpac_init.push({widget: 'Rating', id: ,
-    el: 'wpac-rating',
-    color: 'fc6423'
-  });
-  (function() {
-    if ('WIDGETPACK_LOADED' in window) return;
-    WIDGETPACK_LOADED = true;
-    var mc = document.createElement('script');
-    mc.type = 'text/javascript';
-    mc.async = true;
-    mc.src = '//embed.widgetpack.com/widget.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
-  })();
-  </script>
 
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
   
 
