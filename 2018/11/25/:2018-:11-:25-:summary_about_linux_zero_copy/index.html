@@ -101,7 +101,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于Zero Copy的一些简单总结">
 <meta property="og:url" content="http://jaryur.github.io/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/index.html">
-<meta property="og:site_name" content="程先森的N度空间">
+<meta property="og:site_name" content="程先森的八度空间">
 <meta property="og:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。 几种IO介绍Linux">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://jaryur.github.io/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
@@ -109,7 +109,7 @@
 <meta property="og:image" content="http://jaryur.github.io/images/1543750730518.jpg">
 <meta property="og:image" content="http://jaryur.github.io/images/37c15098760b7d8cd0e9d974ddd2b46d.jpeg">
 <meta property="og:image" content="http://jaryur.github.io/images/180879d0ee95d3b22f9061b46cdabb13.jpeg">
-<meta property="og:updated_time" content="2019-01-01T10:54:40.000Z">
+<meta property="og:updated_time" content="2019-01-02T03:25:47.750Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于Zero Copy的一些简单总结">
 <meta name="twitter:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。 几种IO介绍Linux">
@@ -130,7 +130,7 @@
   };
 </script>
 
-  <title>关于Zero Copy的一些简单总结 | 程先森的N度空间</title>
+  <title>关于Zero Copy的一些简单总结 | 程先森的八度空间</title>
   
 
 
@@ -189,7 +189,7 @@
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">程先森的N度空间</span>
+        <span class="site-title">程先森的八度空间</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -355,7 +355,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="程先森的N度空间"/>
+      <meta itemprop="name" content="程先森的八度空间"/>
     </span>
 
     
@@ -406,7 +406,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-01 18:54:40" itemprop="dateModified" datetime="2019-01-01T18:54:40+08:00">2019-01-01</time>
+                <time title="修改时间：2019-01-02 11:25:47" itemprop="dateModified" datetime="2019-01-02T11:25:47+08:00">2019-01-02</time>
               
             
           </span>
@@ -514,16 +514,57 @@
 <h3 id="Java中的Zero-Copy"><a href="#Java中的Zero-Copy" class="headerlink" title="Java中的Zero Copy"></a>Java中的Zero Copy</h3><ol>
 <li>通过<strong>java.nio.channels.FileChannel</strong>的<strong>transferTo()</strong>可以实现zero copy，在linux类系统中，transferTo调用了操作系统splice()方法，下面一个图是传统 Java copy API和 FileChannel zero copy的耗时比较，大约有65%的性能提升 </li>
 </ol>
-<p>| File size | Normal file transfer (ms) | transferTo (ms) | </p>
-<p>| — | — | — | </p>
-<p>| 7MB | 156 | 45 | </p>
-<p>| 21MB | 337 | 128 | </p>
-<p>| 63MB | 843 | 387 | </p>
-<p>| 98MB | 1320 | 617 | </p>
-<p>| 200MB | 2124 | 1150 | </p>
-<p>| 350MB | 3631 | 1762 | </p>
-<p>| 700MB | 13498 | 4422 | </p>
-<p>| 1GB | 18399 | 8537 | </p>
+<table>
+<thead>
+<tr>
+<th>File size</th>
+<th>Normal file transfer (ms)</th>
+<th>transferTo (ms)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7MB</td>
+<td>156</td>
+<td>45</td>
+</tr>
+<tr>
+<td>21MB</td>
+<td>337</td>
+<td>128</td>
+</tr>
+<tr>
+<td>63MB</td>
+<td>843</td>
+<td>387</td>
+</tr>
+<tr>
+<td>98MB</td>
+<td>1320</td>
+<td>617</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>2124</td>
+<td>1150</td>
+</tr>
+<tr>
+<td>350MB</td>
+<td>3631</td>
+<td>1762</td>
+</tr>
+<tr>
+<td>700MB</td>
+<td>13498</td>
+<td>4422</td>
+</tr>
+<tr>
+<td>1GB</td>
+<td>18399</td>
+<td>8537</td>
+</tr>
+</tbody>
+</table>
 <ol start="2">
 <li><p>通过<strong>java.nio.channels.FileChannel</strong>的<strong>(MapMode mode,long position, long size)</strong>实现mmap，相对于传统的BIO等文件操作尤其是大文件的读写，性能有较大的提升。</p>
 <blockquote>
