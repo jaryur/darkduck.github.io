@@ -15,11 +15,11 @@
 
 
 <html class="theme-next muse use-motion" lang="zh-CN">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
-<meta name="theme-color" content="#222"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
 
 
 
@@ -46,9 +46,9 @@
 
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
 
-<link rel="stylesheet" href="/css/main.css?v=6.7.0"/>
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
@@ -120,7 +120,7 @@
 
 
 
-  <link rel="canonical" href="http://jaryur.github.io/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/"/>
+  <link rel="canonical" href="http://jaryur.github.io/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/">
 
 
 
@@ -226,7 +226,7 @@
 
     
 
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>首页</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
 
   </li>
         
@@ -243,7 +243,7 @@
 
     
 
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>关于</a>
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
 
   </li>
         
@@ -260,7 +260,7 @@
 
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>标签</a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
 
   </li>
         
@@ -277,7 +277,7 @@
 
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br/>分类</a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
 
   </li>
         
@@ -294,7 +294,7 @@
 
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>归档</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
 
   </li>
 
@@ -346,16 +346,16 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://jaryur.github.io/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/"/>
+    <link itemprop="mainEntityOfPage" href="http://jaryur.github.io/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="程先森"/>
-      <meta itemprop="description" content="愿你出走多年，归来仍是少年"/>
-      <meta itemprop="image" content="/images/avatar.gif"/>
+      <meta itemprop="name" content="程先森">
+      <meta itemprop="description" content="愿你出走多年，归来仍是少年">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="程先森的八度空间"/>
+      <meta itemprop="name" content="程先森的八度空间">
     </span>
 
     
@@ -412,7 +412,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -440,8 +440,7 @@
                 </span>
                 <a href="/2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/#comments" itemprop="discussionUrl">
                 
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/11/25/:2018-:11-:25-:summary_about_linux_zero_copy/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -472,27 +471,27 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。</p>
 <h2 id="几种IO介绍"><a href="#几种IO介绍" class="headerlink" title="几种IO介绍"></a>几种IO介绍</h2><h3 id="Linux中文件访问的几种方式"><a href="#Linux中文件访问的几种方式" class="headerlink" title="Linux中文件访问的几种方式"></a>Linux中文件访问的几种方式</h3><ol>
 <li><p>标准文件访问 （缓存IO）<br>用户访问磁盘中数据时，通常通过read()或者write()调用完成，操作系统会先将数据读取或者写入到page cache中，然后再写入磁盘，Linux默认写入磁盘方式为deferred write </p>
-<p><img src="/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg" alt=""> </p>
+<p><img src="/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg" alt> </p>
 </li>
 <li><p>同步访问 </p>
 <p>相对于标准访问方式，同步访问需要在写入磁盘后才返回，而标准访问可以在写入page cache后就返回 </p>
 </li>
 <li><p>内存映射<br>Linux通过将一块内存区域和一个外部设备或者文件关联起来，操作系统将对内存的操作映射为对外部设备或文件的操作，Linux提供了mmap </p>
-<p><img src="/images/4ee3c66cc829db7ce5141cc3f36da35e.jpeg" alt=""> </p>
+<p><img src="/images/4ee3c66cc829db7ce5141cc3f36da35e.jpeg" alt> </p>
 </li>
 <li><p>直接访问（直接IO）</p>
-<p>直接在用户空间访问文件，不需要内核空间的page cache支持，对于一些通过应用程序自身进行缓存控制的程序（例如数据库）比较适用<br><img src="/images/1543750730518.jpg" alt=""></p>
+<p>直接在用户空间访问文件，不需要内核空间的page cache支持，对于一些通过应用程序自身进行缓存控制的程序（例如数据库）比较适用<br><img src="/images/1543750730518.jpg" alt></p>
 </li>
 <li><p>异步访问 </p>
 <p>用户程序在写入或者读取磁盘数据时无需阻塞，由操作系统异步，提升了用户程序的效率 </p>
-<p><img src="/images/37c15098760b7d8cd0e9d974ddd2b46d.jpeg" alt=""> </p>
+<p><img src="/images/37c15098760b7d8cd0e9d974ddd2b46d.jpeg" alt> </p>
 </li>
 </ol>
 <h3 id="缓存IO和直接IO对比"><a href="#缓存IO和直接IO对比" class="headerlink" title="缓存IO和直接IO对比"></a>缓存IO和直接IO对比</h3><p>缓存IO需要由DMA将文件数据读入到page cache，然后通过page cache读取数据，如果一个文件需要频繁访问，能够减少文件直接访问次数，但是在大量文件访问的程序中，存在很多用户程序，内核page cache和磁盘文件的数据copy，就会带来很高的cpu负载。</p>
 <h3 id="如何进行直接IO调用"><a href="#如何进行直接IO调用" class="headerlink" title="如何进行直接IO调用"></a>如何进行直接IO调用</h3><p>linux中文件操作主要通过read(),write(),open()这三个操作完成，在函数操作中通过O_DIRECT标识符完成 </p>
 <h3 id="直接IO的使用场景"><a href="#直接IO的使用场景" class="headerlink" title="直接IO的使用场景"></a>直接IO的使用场景</h3><p>由于直接IO调用减少了数据的copy次数，对于一些需要大量数据复制（到内存或者网络）或者对数据缓存能够通过应用控制（例如数据库）的场景，会有很大的性能提升 </p>
 <h2 id="Zero-Copy"><a href="#Zero-Copy" class="headerlink" title="Zero Copy"></a>Zero Copy</h2><p>Linux 　中传统的 I/O 操作是一种缓冲 I/O，I/O 过程中产生的数据传输通常需要在缓冲区中进行多次的拷贝操作，例如一次网络请求中，如果需要读取磁盘文件，需要经过四次copy过程和多次的内核和用户态的上下文切换，下面是一次传统web请求中，从磁盘读取数据到返回数据结果的过程中数据在内存中的copy过程 </p>
-<p><img src="/images/180879d0ee95d3b22f9061b46cdabb13.jpeg" alt=""> </p>
+<p><img src="/images/180879d0ee95d3b22f9061b46cdabb13.jpeg" alt> </p>
 <p>也可以通过<a href="https://developer.ibm.com/articles/j-zerocopy/" target="_blank" rel="noopener">Efficient data transfer through zero copy</a>这篇文章详细了解 </p>
 <p>zero copy技术可以避免数据的多次copy，减少不必要的上下文切换（内核态和用户态），降低CPU的资源浪费，尤其在处理大量网络请求的应用中，zero copy显得更加重要。 </p>
 <h3 id="linux中zero-copy实现方式主要实现方式"><a href="#linux中zero-copy实现方式主要实现方式" class="headerlink" title="linux中zero copy实现方式主要实现方式"></a>linux中zero copy实现方式主要实现方式</h3><ol>
@@ -522,8 +521,7 @@
 <th>transferTo (ms)</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>7MB</td>
 <td>156</td>
 <td>45</td>
@@ -563,8 +561,7 @@
 <td>18399</td>
 <td>8537</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <ol start="2">
 <li><p>通过<strong>java.nio.channels.FileChannel</strong>的<strong>(MapMode mode,long position, long size)</strong>实现mmap，相对于传统的BIO等文件操作尤其是大文件的读写，性能有较大的提升。</p>
 <blockquote>
@@ -590,6 +587,7 @@
 </li>
 <li><p>MMAP</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MappedByteBuffer mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, filechannel.size();</span><br></pre></td></tr></table></figure>
+
 <p>RocketMQ默认采用异步mmap的方式实现消息刷盘</p>
 </li>
 </ul>
