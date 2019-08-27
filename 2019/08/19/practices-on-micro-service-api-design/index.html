@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言  随着微服务的越来越流行，越来的越多的公司开始实行微服务架构，相对于单一应用架构，微服务将复杂性拆分并且打散到一个个粒度更加细分的应用中，极大了减少了开发中单个服务的复杂性，开发人员只需要面向专注单一业务场景编程，从技术开发角度，单一服务代码量上减少很多，从业务角度上，业务复杂性的降低降低了需求的沟通成本，然而，整体业务复杂性依然存在，当我们需要接入或者依赖其他服务时，通常作为接入方来说，我">
+<meta name="keywords" content="总结,微服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微服务API设计实践总结">
+<meta property="og:url" content="http://jaryur.github.io/2019/08/19/practices-on-micro-service-api-design/index.html">
+<meta property="og:site_name" content="八度空间">
+<meta property="og:description" content="前言  随着微服务的越来越流行，越来的越多的公司开始实行微服务架构，相对于单一应用架构，微服务将复杂性拆分并且打散到一个个粒度更加细分的应用中，极大了减少了开发中单个服务的复杂性，开发人员只需要面向专注单一业务场景编程，从技术开发角度，单一服务代码量上减少很多，从业务角度上，业务复杂性的降低降低了需求的沟通成本，然而，整体业务复杂性依然存在，当我们需要接入或者依赖其他服务时，通常作为接入方来说，我">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-27T05:54:48.476Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微服务API设计实践总结">
+<meta name="twitter:description" content="前言  随着微服务的越来越流行，越来的越多的公司开始实行微服务架构，相对于单一应用架构，微服务将复杂性拆分并且打散到一个个粒度更加细分的应用中，极大了减少了开发中单个服务的复杂性，开发人员只需要面向专注单一业务场景编程，从技术开发角度，单一服务代码量上减少很多，从业务角度上，业务复杂性的降低降低了需求的沟通成本，然而，整体业务复杂性依然存在，当我们需要接入或者依赖其他服务时，通常作为接入方来说，我">
+
+
+
+
+
+
+  <link rel="canonical" href="http://jaryur.github.io/2019/08/19/practices-on-micro-service-api-design/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>微服务API设计实践总结 | 八度空间</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">八度空间</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jaryur.github.io/2019/08/19/practices-on-micro-service-api-design/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="程先森">
+      <meta itemprop="description" content="愿你出走多年，归来仍是少年">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="八度空间">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">微服务API设计实践总结
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-19 16:54:42" itemprop="dateCreated datePublished" datetime="2019-08-19T16:54:42+08:00">2019-08-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-27 13:54:48" itemprop="dateModified" datetime="2019-08-27T13:54:48+08:00">2019-08-27</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/实践/" itemprop="url" rel="index"><span itemprop="name">实践</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/08/19/practices-on-micro-service-api-design/#comments" itemprop="discussionUrl">
+                
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/08/19/practices-on-micro-service-api-design/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  随着微服务的越来越流行，越来的越多的公司开始实行微服务架构，相对于单一应用架构，微服务将复杂性拆分并且打散到一个个粒度更加细分的应用中，极大了减少了开发中单个服务的复杂性，开发人员只需要面向专注单一业务场景编程，从技术开发角度，单一服务代码量上减少很多，从业务角度上，业务复杂性的降低降低了需求的沟通成本，然而，整体业务复杂性依然存在，当我们需要接入或者依赖其他服务时，通常作为接入方来说，我们不需要深入了解服务提供方的业务，此时API成为了开发人员间的沟通语言。<br>  良好的API设计，能极大的减少沟通成本，甚至有时候可以代替文档，尤其是对于基础性服务来说，服务的可扩展性有时候体现在API的可扩展性，我曾经参与过一个基础业务微服务的业务升级，由于旧版本的API划分不够清晰，部分API存在重复性，后面不得不对大部分API进行重构（替换为新版本的API），仅仅在服务消费方升级这个阶段就持续1-2个月之久，在这个过程中也不断对API设计中存在的一些问题以及应该遵循哪些原则进行了一些思考。</p>
+<h2 id="API先行"><a href="#API先行" class="headerlink" title="API先行"></a>API先行</h2><p>  在敏捷开发的大浪潮下，产品上通常要求快速迭代，面对一个新的需求，如果需要开发新的接口，通常在表结构完成设计后，开发人员就需要完成API设计并交付消费方（即服务的调用方或者依赖方，文中其余部分均表示此含义），在技术联调前，消费方可以Mock接口来完成调试。所以通常来说，API先与服务交付，之后再完成编码，测试，调试等工作。当然，由于可能在需求细节，技术实现方面可能在实现过程中发现需求需要调整，或者API接口的调整，最初版本的API可能是不成熟的，导致我们经常在API调整或者演化过程中在API维护方面存在很多遗漏，所以API最初交付后的维护是持续性的工作。</p>
+<h2 id="API设计常见问题"><a href="#API设计常见问题" class="headerlink" title="API设计常见问题"></a>API设计常见问题</h2><p>  在我们设计API过程中由于存在经验的缺失，或者由于多次交接，或者由于经历多次需求的变更，导致服务的API慢慢腐化，带来以下常见的问题。</p>
+<ul>
+<li><p>被遗忘的注释</p>
+<p>  注释通常描述了API的功能以及参数说明，以及如何接入，甚至给出简单示例，过于详细的注释会带来一定的反作用，例如因为新需求带来了内部逻辑的调整，但是由于未及时对API的注释进行更新，会给新接入的调用方带来潜在的风险。所以不仅仅需要为API提供完整清晰的注释，当内部逻辑变更时，作为开发人员通常也需要评估API层面的变更，包括注释。</p>
+</li>
+<li><p>接口数量持续膨胀</p>
+<p>   有很多原因带来接口数量的膨胀，可能是接口升级，但是旧接口无法直接下线，所以会提供一个功能类似的新接口；可能是新接管一个服务由于对业务不了解，面对新需求直接开发新接口；可能是接口分类划分不合理，或者数据模型混乱导致API划分混乱，出现API功能重复，最后导致一个场景多个API接口都可以满足，这样很明显是应该避免的。解决这些问题都需要建立在对业务充分理解的基础上，下文的设计原则会针对这类问题给出解决方案。</p>
+</li>
+<li><p>缺乏有效测试</p>
+<p>  很多开发人员往往忽略对于接口的测试，无论是内部逻辑细节的单元测试，还是接口层面的测试，都是服务健壮性的一个有效保证，如果无法对接口进行有效测试，不仅是不负责任的提现，而且还会经常被线上bug困扰。</p>
+</li>
+</ul>
+<h2 id="API设计的原则"><a href="#API设计的原则" class="headerlink" title="API设计的原则"></a>API设计的原则</h2><ol>
+<li><p>简单且专注</p>
+<ul>
+<li>简单</li>
+</ul>
+<p>在面向对象设计原则中，第一条是单一职责原则，同样适用于API设计，我们的主体对象就是业务模型，API就是封装内部逻辑后对外界开放的功能。保证API的简单和职责单一，能够避免解决上文中提到的接口数量膨胀问题。那如何才能实现API职责单一，需要我们在定义接口时能够准确识别出接口之间的关联性和边界，对于API如何划分可以通过以下角度</p>
+<pre><code>1. 按照业务主体划分，不一样的业务主体采用不一样的接口类
+2. 查询类和修改类的接口分离；通常来说我们对于数据的查询场景远大于修改的场景，而且查询有多种多样的业务场景，对于数据的修改请求通常来源于业务后台人员对数据进行修改，此时的业务逻辑也通常会更加特殊（例如有很多额外数据校验），所以建议修改类和查询类API尽量分离，甚至可以将业务配置后台类查询和普通业务查询分离以至于能够适应各自的业务变更。</code></pre><ul>
+<li>专注</li>
+</ul>
+<p>一个单一接口的场景是基于业务抽象后专注于某一个场景并且互相不重合的，这样才能保证接口的粒度足够小，尤其是对于基础类服务，接口粒度的划分能保证接口是纯粹的且互相独立的，这样才不至于在需求变化是涉及过多接口的变动（除非是对业务模型有较大的调整），另外要说明的是，内部逻辑的业务数据模型（POJO类）和API数据模型（DTO）有时候出现差异，否则可能需要消费者理解服务的业务模型才能正确的使用接口，这就要求在API设计中开发人员需要明确应该提供哪些数据模型给消费者，在此前提下更加有助于我们保证单一接口的专注。</p>
+</li>
+<li><p>良好的注释 </p>
+<ul>
+<li>注释应该包含哪些；接口的使用场景，参数的说明，在接口类说明中可以给出接口文档链接地址，方便调用方查看</li>
+<li>参数的说明；包含参数代表的含义，参数的类型按照Javadoc link规范，参数是否为空，特殊值说明</li>
+<li>过期说明；如果接口已经过期，需要给出过期说明，对于Java来时就是@Deprecated注解，并给出切换接口说明，如果条件允许可以推动调用方进行接口迁移，后续对旧接口下线</li>
+</ul>
+</li>
+<li><p>扩展性<br> 唯一不变的是变化，接口也会一直演化，我们不提倡过度提前设计，但是在演化过程中要始终保持接口的可扩展性。</p>
+<ul>
+<li>多参数结构与单一参数类结构</li>
+</ul>
+<p>通常来说，如果一个接口的参数小于三个，那么建议使用多参数接口，这样做到直观简洁<br>如果一个接口的参数较多而且后续可能经常出现变动，为了便于扩展和兼容，会将参数封装到一个类结构中，记得同样对每个字段给出完整的注释说明</p>
+<ul>
+<li>类复用噩梦</li>
+</ul>
+<p>在单一参数类结构下，我经常看到多个存在明显功能差异的接口频繁复用一个结构体，甚至接口参数和返回值都复用一个DTO，为了保证兼容，又不得不在同一个DTO内不断加字段，久而久之维护成本持续增高，这是一种不合理的类设计，如果遵守专注原则，这个问题很多时候可以避免</p>
+</li>
+<li><p>兼容性</p>
+<ul>
+<li><p>逻辑兼容</p>
+<p>接口逻辑或者参数变更时，需要对旧的接口保持兼容，这个是API变更时一定要遵守的原则之一，而且要通过接口测试来验证兼容性</p>
+</li>
+<li><p>是否要新增接口</p>
+<p>当面对一个新的需求时，为了避免对旧接口直接修改，有的开发人员会统一提供新的接口，如果并非逻辑上发生较大的变更，这样做会提高API的维护成本，后续如果不对API进行重构，新增加的维护成本将远大于最开始节省的开发成本，例如需要对某个参数增加有效校验，那么我们需要对两个接口的API实现都做修改，而且是重复性的代码，而且我们的影响范围已经成了两个接口，这样影响范围的扩大也带来了更多的潜在风险。<br>当然在某些场景例如接口逻辑出现大的调整，API重构等情况下，更好的方法是提供新的接口，并推动服务消费者使用新的API，最后慢慢下线旧的API，这样才能遵循简单和专注的原则。</p>
+</li>
+</ul>
+</li>
+<li><p>完善的测试</p>
+<ul>
+<li><p>单元测试</p>
+<p>完善的单元测试能保证代码的健壮性，提前在编码阶段发现并解决潜在的bug，单元测试是一个开发人员的必备能力。</p>
+</li>
+<li><p>接口和场景测试</p>
+<p>接口测试包含内部逻辑验证，异常输入，并发等场景下对单一接口的验证，如果要对API进行完整的逻辑验证，需要开发人员构造完整的测试数据（通常包含scheme.sql和data.sql文件），尤其是对于基础服务，需要对某些复杂业务场景下联合多个接口完成某个场景的测试，并对中间的数据和输出进行Assert确认，这样也会代码一定的测试代码维护成本，需要开发人员进行利弊权衡。</p>
+</li>
+</ul>
+</li>
+<li><p>重视文档<br>良好的注释和文档能减少大部分和服务消费者的沟通工作，也避免了一些错误的接口调使用。没有人希望每次都需要在IM工具上浪费大量口水或者需要当面询问才知道如何正确使用API，也没有开发者愿意每天重复回答如何调用提供的接口。对于接口文档，可以是采用Javadoc这样简单的方式，也可以是通过wiki来集中管理，可以是markdown文档，也有很多的开源系统例如swagger，yapi，eolinker等；微服务的架构极大的加强了沟通的成本，这也是微服务架构的一个弊端，但是合理的利用工具可以减少不必要的沟通。</p>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>  作为微服务之间的桥梁，API设计和维护是微服务架构中很重要的一个环节，每个开发人员不仅仅需要良好的代码规范，也需要建立并遵守API设计规范。API设计能力在微服务架构中作为软实力的一个部分，需要开发人员有一定的设计经验的积累，同时，只有不断的思考和总结才能更加深入的理解。</p>
+<p>​    </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/总结/" rel="tag"># 总结</a>
+          
+            <a href="/tags/微服务/" rel="tag"># 微服务</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/19/thoughts-of-spring-extention/" rel="next" title="常见的基于Spring和Spring Boot框架的集成与扩展点">
+                <i class="fa fa-chevron-left"></i> 常见的基于Spring和Spring Boot框架的集成与扩展点
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">程先森</p>
+              <p class="site-description motion-element" itemprop="description">愿你出走多年，归来仍是少年</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API先行"><span class="nav-number">2.</span> <span class="nav-text">API先行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API设计常见问题"><span class="nav-number">3.</span> <span class="nav-text">API设计常见问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API设计的原则"><span class="nav-number">4.</span> <span class="nav-text">API设计的原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">程先森</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+  
+
+  
+    <script>
+      var disqus_config = function () {
+        this.page.url = "http://jaryur.github.io/2019/08/19/practices-on-micro-service-api-design/";
+        this.page.identifier = "2019/08/19/practices-on-micro-service-api-design/";
+        this.page.title = '微服务API设计实践总结';
+        };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
