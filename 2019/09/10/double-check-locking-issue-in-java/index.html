@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文是我之前发表在其他网站的博客，近期统一迁移到个人博客并重新编辑后发布  最近在阅读《Java并发编程实战》，在关于Java内存模型-重排序章节，重新提到了一直以来未很有困惑性的问题。书中给出的例子是  int a,b,x,y=0  在ThreadA中的操作为   a = 1; x = b;  在另外一个线程ThreadB中的操作为  b = 1;y = a;  最后在两个线程分别start后">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中的Happens-Before，重排序和DCL问题">
+<meta property="og:url" content="http://jaryur.github.io/2019/09/10/double-check-locking-issue-in-java/index.html">
+<meta property="og:site_name" content="八度空间">
+<meta property="og:description" content="本文是我之前发表在其他网站的博客，近期统一迁移到个人博客并重新编辑后发布  最近在阅读《Java并发编程实战》，在关于Java内存模型-重排序章节，重新提到了一直以来未很有困惑性的问题。书中给出的例子是  int a,b,x,y=0  在ThreadA中的操作为   a = 1; x = b;  在另外一个线程ThreadB中的操作为  b = 1;y = a;  最后在两个线程分别start后">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-12T06:39:59.306Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中的Happens-Before，重排序和DCL问题">
+<meta name="twitter:description" content="本文是我之前发表在其他网站的博客，近期统一迁移到个人博客并重新编辑后发布  最近在阅读《Java并发编程实战》，在关于Java内存模型-重排序章节，重新提到了一直以来未很有困惑性的问题。书中给出的例子是  int a,b,x,y=0  在ThreadA中的操作为   a = 1; x = b;  在另外一个线程ThreadB中的操作为  b = 1;y = a;  最后在两个线程分别start后">
+
+
+
+
+
+
+  <link rel="canonical" href="http://jaryur.github.io/2019/09/10/double-check-locking-issue-in-java/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Java中的Happens-Before，重排序和DCL问题 | 八度空间</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">八度空间</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jaryur.github.io/2019/09/10/double-check-locking-issue-in-java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="程先森">
+      <meta itemprop="description" content="愿你出走多年，归来仍是少年">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="八度空间">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java中的Happens-Before，重排序和DCL问题
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-10 14:46:38" itemprop="dateCreated datePublished" datetime="2019-09-10T14:46:38+08:00">2019-09-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-12 14:39:59" itemprop="dateModified" datetime="2019-09-12T14:39:59+08:00">2019-09-12</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/10/double-check-locking-issue-in-java/#comments" itemprop="discussionUrl">
+                
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/09/10/double-check-locking-issue-in-java/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本文是我之前发表在其他网站的博客，近期统一迁移到个人博客并重新编辑后发布</p>
+</blockquote>
+<p>最近在阅读《<strong>Java并发编程实战</strong>》，在关于Java内存模型-重排序章节，重新提到了一直以来未很有困惑性的问题。<br>书中给出的例子是</p>
+<blockquote>
+<p>int a,b,x,y=0</p>
+</blockquote>
+<p>在ThreadA中的操作为</p>
+<blockquote>
+<p> a = 1;<br> x = b;</p>
+</blockquote>
+<p>在另外一个线程ThreadB中的操作为</p>
+<blockquote>
+<p>b = 1;<br>y = a;</p>
+</blockquote>
+<p>最后在两个线程分别start后，在<strong>Main</strong>中执行打印<strong>x</strong>和<strong>y</strong>的值，有一种情况是会出现打印<strong>x,y</strong>  都为0的情况，并且可能的执行顺序为</p>
+<blockquote>
+<p>线程A   start——&gt; x=b(0)——————————&gt;a=1——end<br>线程B   start——————&gt; b=1——&gt;y=a(0)——end</p>
+</blockquote>
+<p> 我们可以看到指令的执行顺序和代码中的顺序完全不一致。在JMM中定义了操作的偏序关系，并且Java规范提供了<strong>Happens-Before</strong>规则，其中一条规则是</p>
+<blockquote>
+<p><strong>程序顺序规则：(一个线程中)如果一个操作A在操作B之前，那么在线程A中操作将在B操作之前执行。</strong></p>
+</blockquote>
+<p>  通常我们看到这句话，会认为如果在代码上x在前，y在后，那么x在时间上或者指令执行顺序上一定先于y发生，但是如果了解指令重排序的话一定知道其实不然，但是一直很困惑这句话的意义。<br>特意从<strong>Oracle</strong>的官网上找到了相关的说明：</p>
+<blockquote>
+<p>If x and y are actions of the same thread and x comes before y in program order, then hb(x, y).</p>
+</blockquote>
+<p>这句话应该是书中中文翻译的原文，但是在这句话下面又有另外一个说明。</p>
+<blockquote>
+<p>It should be noted that the presence of a <em>happens-before</em> relationship between two actions <strong>does not necessarily imply that they have to take place in that order in an implementation</strong>. If the reordering produces results consistent with a legal execution, it is not illegal.<br>For example, the write of a default value to every field of an object constructed by a thread need not happen before the beginning of that thread, as long as no read ever observes that fact.<br><strong>More specifically, if two actions share a <em>happens-before</em> relationship, they do not necessarily have to appear to have happened in that order to any code with which they do not share a <em>happens-before</em> relationship</strong>. Writes in one thread that are in a data race with reads in another thread may, for example, appear to occur out of order to those reads.<br>The <em>happens-before</em> relation defines when data races take place.</p>
+</blockquote>
+<p>关于data race的解释如下</p>
+<blockquote>
+<p>1.2 <strong>What is a Data Race?</strong><br>The Thread Analyzer detects data-races that occur during the execution of a multi-threaded process. A data race occurs when:<br>two or more threads in a <strong>single process</strong> access the same memory location concurrently, and</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>at least one of the accesses is for writing, and     </li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>the threads are not using any exclusive locks to control their accesses to that memory.</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>When these three conditions hold, the order of accesses is non-deterministic, and the computation may give different results from run to run depending on that order. Some data-races may be benign (for example, when the memory access is used for a busy-wait), but many data-races are bugs in the program.</p>
+</blockquote>
+<p>这段说明提示了我们编译器会对指令进行重排序，前提是不影响到程序的执行结果，一个例子是对一个对象字段的默认值的<strong>write</strong>操作不一定在<strong>thead</strong>开始的时候完成，只要<strong>read</strong>操作没有被影响。我们可以得出以下结论</p>
+<ol>
+<li>存在<strong>Happens-Befere  guarantee</strong>的代码顺序和执行时间上的先后顺序没有直接关系</li>
+<li>在没有<strong>Synchronization</strong>的情况下，由于指令重排序的存在，从一个线程的角度观察另外一个线程的指令执行是无序的</li>
+<li>只有在存在<strong>data race</strong>的情况下，<strong>Happens-Before</strong>规则才是有意义的</li>
+<li>如果操作B依赖于操作A的结果，那么编译器不能对A和B进行重排序，否则结果将是不可预测的</li>
+</ol>
+<p>接下来看下有名的<strong>DCL（Double-Checked Locking）</strong>问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class SomeClass &#123;</span><br><span class="line">  private Resource resource = null;</span><br><span class="line">  public Resource getResource() &#123;</span><br><span class="line">    if (resource == null)</span><br><span class="line">      resource = new Resource();</span><br><span class="line">    return resource;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的主要意图是为了延迟初始化（Lazy Initialization），但是在多线程环境下，这个是一个明显的<strong>CheckAndSet</strong>问题，因此必须在初始化<em>Resource</em>的地方进行同步，防止出现多次初始化。接着就有了下面的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">  class SomeClass &#123;</span><br><span class="line">  private Resource resource = null;</span><br><span class="line">  public Resource getResource() &#123;</span><br><span class="line">    if (resource == null) &#123;</span><br><span class="line">      synchronized &#123;</span><br><span class="line">        if (resource == null) </span><br><span class="line">          resource = new Resource();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return resource;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过这段代码依然存在问题，根据<strong>data race</strong>的描述，在<em>resource</em>变量的<strong>read</strong>和<strong>write</strong>操作上存在<strong>data race</strong>，同时由于指令重排序的存在，new Resource()和resource变量的write操作顺序是不定的，其他的线程有可能在resource == null的判断上读取到了非null的resource，但是<em>Resouce</em>对象可能是并未（构造器总）初始化完成的。我们通过一个相关的例子来说明这个问题：</p>
+<blockquote>
+<p>singletons[i].reference = new Singleton();</p>
+</blockquote>
+<p>下面是 Symantec JIT的编译结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0206106A   mov         eax,0F97E78h</span><br><span class="line">0206106F   call        01F6B210                  ; allocate space for[1]</span><br><span class="line">                                                 ; Singleton, return result in eax</span><br><span class="line">02061074   mov         dword ptr [ebp],eax       ; EBP is &amp;singletons[i].reference </span><br><span class="line">                                                ; store the unconstructed object here.</span><br><span class="line">02061077   mov         ecx,dword ptr [eax]       ; dereference the handle to</span><br><span class="line">                                                 ; get the raw pointer</span><br><span class="line">02061079   mov         dword ptr [ecx],100h      ; Next 4 lines are</span><br><span class="line">0206107F   mov         dword ptr [ecx+4],200h    ; Singleton&apos;s inlined constructor[2]</span><br><span class="line">02061086   mov         dword ptr [ecx+8],400h</span><br><span class="line">0206108D   mov         dword ptr [ecx+0Ch],0F84030h</span><br></pre></td></tr></table></figure>
+
+<p>从编译结果上看到赋值操作1（0206106F），竟然先于<strong>constructor</strong>执行（0206107F），这就解释了多线程场景中，可能读取到未实例化完全的<em>resource</em>变量，简单来说，就是引用赋值和对象构造器调用的执行顺序被重写。<br>那么<strong>DCL</strong>问题如何解决，一种是使用正确的<strong>Synchronization</strong>，Java中的<strong>synchronize</strong>不仅仅提供了独占访问，同时保证了在 <strong>enter synchronize</strong>时从<strong>main memory</strong>读取最新的值到<strong>work cache</strong>，在<strong>synchronize exit</strong>时flush <strong>work cache</strong>的值到<strong>main memory</strong>，但是由于每次访问<em>getResource()</em>的获取锁将会带来性能上的损失。</p>
+<p>第二种方法是不使用延迟初始化，而使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class MySingleton &#123;</span><br><span class="line">  public static Resource resource = new Resource();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>来确保<em>resource</em>的成功实例化。<br>最后一种方案是使用<strong>volatile</strong>关键字修饰resource变量（&gt;=java1.5）。<strong>volatile</strong>关键字提供了两个语义，可见性和禁止指令重排序，可见性应该很多人都了解，涉及到Java内存模型，在此不在细说，对于禁止指令重排序有两个层面的理解，<br>1.针对以下代码</p>
+<blockquote>
+<p>code1<br>code2<br>volatile code<br>code3{print code}<br>code4</p>
+</blockquote>
+<p>即使存在局部指令重排序，<em>code1</em>和<em>code2</em>不能在<strong>volatile code</strong>后发生。<em>code3</em>或者<em>code4</em>不能先于<em>volatile code</em>发生，也就是说虚拟机指令重排序不能调整volatile前后代码相对<em>volatile code</em>的顺序。<br>再看一段代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// Definition: Some variables</span><br><span class="line">// 变量定义</span><br><span class="line">private int first = 1;</span><br><span class="line">private int second = 2;</span><br><span class="line">private int third = 3;</span><br><span class="line">private volatile boolean hasValue = false;</span><br><span class="line">// First Snippet: A sequence of write operations being executed by Thread 1</span><br><span class="line">//片段 1：线程 1 顺序的写操作</span><br><span class="line">first = 5;</span><br><span class="line">second = 6;</span><br><span class="line">third = 7;</span><br><span class="line">hasValue = true;</span><br><span class="line">// Second Snippet: A sequence of read operations being executed by Thread 2</span><br><span class="line">//片段 2：线程 2 顺序的读操作</span><br><span class="line">System.out.println(&quot;Flag is set to : &quot; + hasValue);</span><br><span class="line">System.out.println(&quot;First: &quot; + first);  // will print 5 打印 5</span><br><span class="line">System.out.println(&quot;Second: &quot; + second); // will print 6 打印 6</span><br><span class="line">System.out.println(&quot;Third: &quot; + third);  // will print 7 打印 7</span><br></pre></td></tr></table></figure>
+
+<p>另外一个<strong>volatile</strong>的<strong>Happens-before</strong>原则语义：所有在<strong>volatile</strong>写之前的操作<strong>Happens-Before</strong> <strong>volatile</strong>读之后的语句，即片段2的代码因为<strong>volatile</strong>变量读，从而后面的打印语句一定可以看到最新的<em>first</em>,<em>second</em>,<em>third</em>变量值，这个算是一个trick，我们在代码中可以利用这个trick实现部分代码的<strong>Happens-before</strong>语义保证。</p>
+<p>2.对于<strong>volatile</strong>变量的赋值操作，不会因为指令重排序导致出现读取到未实例化完全的变量值，对应于</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resource = new Resource();</span><br></pre></td></tr></table></figure>
+
+<p>在没有<strong>volatile</strong>修饰情况下读取到未实例化完全的<strong>Resource</strong>对象。</p>
+<p>总结：<strong>Happens-Before</strong>和指令重排序没有直接关系，<strong>JVM</strong>在不违反<strong>Happens-Before</strong>和不影响程序执行结果的情况下可以对指令进行重排序。<strong>Happens-Before</strong>关系和时间上的先后执行顺序没有直接关系，语义表述上很简单，但是要深入理解内部机制并且从多个角度分析，可以引申出很多问题的分析。</p>
+<p>参考资料：</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html#jls-17.4.5" target="_blank" rel="noopener">Java Language Specification-Happens-before Order</a></li>
+<li><a href="http://www.javaworld.com/article/2074979/java-concurrency/double-checked-locking--clever--but-broken.html" target="_blank" rel="noopener">Double-checked locking: Clever, but broken</a></li>
+<li><a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html" target="_blank" rel="noopener">The “Double-Checked Locking is Broken” Declaration</a></li>
+<li><a href="http://gee.cs.oswego.edu/dl/cpj/jmm.html" target="_blank" rel="noopener">Synchronization and the Java Memory Model</a></li>
+<li><a href="https://docs.oracle.com/cd/E19205-01/820-0619/geojs/index.html" target="_blank" rel="noopener">What is a Data Race</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/19/practices-on-micro-service-api-design/" rel="next" title="微服务API设计实践总结">
+                <i class="fa fa-chevron-left"></i> 微服务API设计实践总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">程先森</p>
+              <p class="site-description motion-element" itemprop="description">愿你出走多年，归来仍是少年</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">程先森</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+  
+
+  
+    <script>
+      var disqus_config = function () {
+        this.page.url = "http://jaryur.github.io/2019/09/10/double-check-locking-issue-in-java/";
+        this.page.identifier = "2019/09/10/double-check-locking-issue-in-java/";
+        this.page.title = 'Java中的Happens-Before，重排序和DCL问题';
+        };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
