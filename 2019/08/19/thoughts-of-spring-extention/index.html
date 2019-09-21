@@ -96,19 +96,20 @@
 
 
 
-  <meta name="description" content="对于每个Java程序员来说，Spring应该是我们Java学习中第一个开始接触的技术框架，而且应该是每个Java程序员使用和熟悉程度最高的技术框架。近些年来，Spring的生态慢慢变得的越来越丰富，Spring Boot作为一种开箱即用的集大成者，整合了常用的一些模块，大大减少了重复性的工作，这离不开Spring框架的扩展性，同时Spring Cloud也基于Spring衍生出了微服务实施的一整">
-<meta name="keywords" content="spring-boot,spring,框架">
+  <meta name="description" content="前言对于每个Java程序员来说，Spring应该是我们Java学习中第一个开始接触的技术框架，而且应该是每个Java程序员使用和熟悉程度最高的技术框架。近些年来，Spring的生态慢慢变得的越来越丰富，Spring Boot作为一种开箱即用的集大成者，整合了常用的一些模块，大大减少了重复性的工作，这离不开Spring框架的扩展性，同时Spring Cloud也基于Spring衍生出了微服务实施的一">
+<meta name="keywords" content="Spring-Boot,Spring,框架">
 <meta property="og:type" content="article">
-<meta property="og:title" content="常见的基于Spring和Spring Boot框架的集成与扩展点">
+<meta property="og:title" content="基于Spring和Spring Boot框架的集成与扩展点">
 <meta property="og:url" content="http://jaryur.github.io/2019/08/19/thoughts-of-spring-extention/index.html">
 <meta property="og:site_name" content="八度空间">
-<meta property="og:description" content="对于每个Java程序员来说，Spring应该是我们Java学习中第一个开始接触的技术框架，而且应该是每个Java程序员使用和熟悉程度最高的技术框架。近些年来，Spring的生态慢慢变得的越来越丰富，Spring Boot作为一种开箱即用的集大成者，整合了常用的一些模块，大大减少了重复性的工作，这离不开Spring框架的扩展性，同时Spring Cloud也基于Spring衍生出了微服务实施的一整">
+<meta property="og:description" content="前言对于每个Java程序员来说，Spring应该是我们Java学习中第一个开始接触的技术框架，而且应该是每个Java程序员使用和熟悉程度最高的技术框架。近些年来，Spring的生态慢慢变得的越来越丰富，Spring Boot作为一种开箱即用的集大成者，整合了常用的一些模块，大大减少了重复性的工作，这离不开Spring框架的扩展性，同时Spring Cloud也基于Spring衍生出了微服务实施的一">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://jaryur.github.io/images/spring-bean-lifecycle.jpg">
-<meta property="og:updated_time" content="2019-08-27T17:23:16.591Z">
+<meta property="og:image" content="http://jaryur.github.io/images/image-20190827102626847.png">
+<meta property="og:updated_time" content="2019-09-21T08:40:38.773Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="常见的基于Spring和Spring Boot框架的集成与扩展点">
-<meta name="twitter:description" content="对于每个Java程序员来说，Spring应该是我们Java学习中第一个开始接触的技术框架，而且应该是每个Java程序员使用和熟悉程度最高的技术框架。近些年来，Spring的生态慢慢变得的越来越丰富，Spring Boot作为一种开箱即用的集大成者，整合了常用的一些模块，大大减少了重复性的工作，这离不开Spring框架的扩展性，同时Spring Cloud也基于Spring衍生出了微服务实施的一整">
+<meta name="twitter:title" content="基于Spring和Spring Boot框架的集成与扩展点">
+<meta name="twitter:description" content="前言对于每个Java程序员来说，Spring应该是我们Java学习中第一个开始接触的技术框架，而且应该是每个Java程序员使用和熟悉程度最高的技术框架。近些年来，Spring的生态慢慢变得的越来越丰富，Spring Boot作为一种开箱即用的集大成者，整合了常用的一些模块，大大减少了重复性的工作，这离不开Spring框架的扩展性，同时Spring Cloud也基于Spring衍生出了微服务实施的一">
 <meta name="twitter:image" content="http://jaryur.github.io/images/spring-bean-lifecycle.jpg">
 
 
@@ -126,7 +127,7 @@
   };
 </script>
 
-  <title>常见的基于Spring和Spring Boot框架的集成与扩展点 | 八度空间</title>
+  <title>基于Spring和Spring Boot框架的集成与扩展点 | 八度空间</title>
   
 
 
@@ -190,6 +191,10 @@
       </a>
     </div>
     
+      
+        <p class="site-subtitle">愿你出走多年，归来仍是少年</p>
+      
+    
     
   </div>
 
@@ -229,40 +234,6 @@
         
         
           
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
           <li class="menu-item menu-item-categories">
 
     
@@ -291,6 +262,40 @@
     
 
     <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
 
   </li>
 
@@ -359,7 +364,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">常见的基于Spring和Spring Boot框架的集成与扩展点
+          <h1 class="post-title" itemprop="name headline">基于Spring和Spring Boot框架的集成与扩展点
 
               
             
@@ -402,7 +407,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-08-28 01:23:16" itemprop="dateModified" datetime="2019-08-28T01:23:16+08:00">2019-08-28</time>
+                <time title="修改时间：2019-09-21 16:40:38" itemprop="dateModified" datetime="2019-09-21T16:40:38+08:00">2019-09-21</time>
               
             
           </span>
@@ -464,14 +469,10 @@
       
 
       
-        <p> 对于每个Java程序员来说，Spring应该是我们Java学习中第一个开始接触的技术框架，而且应该是每个Java程序员使用和熟悉程度最高的技术框架。近些年来，Spring的生态慢慢变得的越来越丰富，Spring Boot作为一种开箱即用的集大成者，整合了常用的一些模块，大大减少了重复性的工作，这离不开Spring框架的扩展性，同时Spring Cloud也基于Spring衍生出了微服务实施的一整套解决方案，大大推进了微服务的技术落地。从2004年Spring框架发布，已经历经15年发展，Spring框架慢慢的成为Java生态中的基础设施，正是其不断的发展，让Java生命力的越来越强大。</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>对于每个Java程序员来说，Spring应该是我们Java学习中第一个开始接触的技术框架，而且应该是每个Java程序员使用和熟悉程度最高的技术框架。近些年来，Spring的生态慢慢变得的越来越丰富，Spring Boot作为一种开箱即用的集大成者，整合了常用的一些模块，大大减少了重复性的工作，这离不开Spring框架的扩展性，同时Spring Cloud也基于Spring衍生出了微服务实施的一整套解决方案，大大推进了微服务的技术落地。从2004年Spring框架发布，已经历经15年发展，Spring框架慢慢的成为Java生态中的基础设施，正是其不断的发展，让Java生命力的越来越强大。</p>
 <p>最近在工作中使用到了Nacos作为配置中心，顺便熟悉了Nacos Spring Boot Starter和Nacos Spring Cloud的一些代码，发现对于Spring中的一些特性慢慢生疏，对此作了一些反思，主要平时更加专注于业务场景解决方案和其他中间件的使用，而且技术学习的重心更加倾向于原理介绍和最佳实践，然而目前作为一名Java开发人员，Java原生包是Java技术体系的根基，Spring框架是Java生态的基础设施，两者都需要持续不断的学习，更新知识体系。</p>
 <p>伴随着对Nacos源码的阅读，慢慢带着问题重新学习了一些Spring框架中的常用类和结构，如果我们要基于Spring框架做扩展，或者集成一些基础中间件，这些特性和扩展点成为了不可或缺的知识。</p>
-<ol>
-<li><p>Bean生命周期中的扩展点</p>
-<ol>
-<li>Bean的生命周期<br>首先必须先了解Bean加载和实例化过程中都包含哪些过程</li>
-</ol>
+<h1 id="Spring-Bean和BeanFactory"><a href="#Spring-Bean和BeanFactory" class="headerlink" title="Spring Bean和BeanFactory"></a>Spring Bean和BeanFactory</h1><h2 id="Bean生命周期中的扩展点"><a href="#Bean生命周期中的扩展点" class="headerlink" title="Bean生命周期中的扩展点"></a>Bean生命周期中的扩展点</h2><h3 id="Bean的生命周期"><a href="#Bean的生命周期" class="headerlink" title="Bean的生命周期"></a>Bean的生命周期</h3><p>首先必须先了解Bean加载和实例化过程中都包含哪些过程</p>
 <p><img src="/images/spring-bean-lifecycle.jpg" alt="bean-lifecycle"></p>
 <p>通常来说Bean生命周期过程执行顺序包含了</p>
 <ol>
@@ -487,13 +488,10 @@
 <blockquote>
 <p>请注意：实例化(Instantiation)和初始化(Initialization)是两个不一样的阶段</p>
 </blockquote>
-<ol start="2">
-<li><p>InstantiationAwareBeanPostProcessor接口<br>Bean Instantiation作为Bean生命周期的第一个阶段，这个接口提供Bean实例化过程的前置处理方法postProcessBeforeInitialization和后置处理方法postProcessAfterInitialization。通常来说，如果要扩展此接口，继承InstantiationAwareBeanPostProcessorAdapter是更好的选择。例如在Spring源码中，AutowiredAnnotationBeanPostProcessor就是作为InstantiationAwareBeanPostProcessorAdapter子类，实现了@Autowire和@Value注解的处理，同样，Nacos @NacosValue注解处理也采用了类似的方式。</p>
+<h3 id="InstantiationAwareBeanPostProcessor接口"><a href="#InstantiationAwareBeanPostProcessor接口" class="headerlink" title="InstantiationAwareBeanPostProcessor接口"></a>InstantiationAwareBeanPostProcessor接口</h3><p>Bean Instantiation作为Bean生命周期的第一个阶段，这个接口提供Bean实例化过程的前置处理方法postProcessBeforeInitialization和后置处理方法postProcessAfterInitialization。通常来说，如果要扩展此接口，继承InstantiationAwareBeanPostProcessorAdapter是更好的选择。例如在Spring源码中，AutowiredAnnotationBeanPostProcessor就是作为InstantiationAwareBeanPostProcessorAdapter子类，实现了@Autowire和@Value注解的处理，同样，Nacos @NacosValue注解处理也采用了类似的方式。</p>
 <p>另外一个子类是CommonAnnotationBeanPostProcessor，这个类用来处理<em>JSR-250</em>注解，例如我们常用的@Resource，和后面会提到的@PostConstruct，@PreDestroy。</p>
 <p>那么如果我们要实现自定义注解的处理，可以采用类似的方式，通过实现InstantiationAwareBeanPostProcessor接口或者继承InstantiationAwareBeanPostProcessorAdapter类来完成。</p>
-</li>
-<li><p>Aware接口</p>
-<p>正如接口名一样，<strong>Aware</strong>接口通常用于我们需要对一些对象需要感知，通常使用较多的一些子类有</p>
+<h3 id="Aware接口"><a href="#Aware接口" class="headerlink" title="Aware接口"></a>Aware接口</h3><p>正如接口名一样，<strong>Aware</strong>接口通常用于我们需要对一些对象需要感知，通常使用较多的一些子类有</p>
 <ul>
 <li><p>EnvironmentAware</p>
 <p>通过setEnvironment方法感知环境信息，包括了profile和当前profile下的配置信息。Spring中的@Value和Spring Boot中的@PropertySource的Property值都是从Spring当前的Environment对象中获取，严格的Environment对象不仅仅包含了我们常用的application-{profile}.properties配置文件，同时包含了多个层级而且有优先级顺序的多种参数，例如JVM参数，系统参数等，可以通过<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" target="_blank" rel="noopener">Spring Boot配置说明文档</a>了解更多。Nacos作为分布式配置中心就是作为一个配置对象添加到Environment配置列表中。</p>
@@ -507,57 +505,38 @@
 <li><p>ApplicationEventPublisherAware</p>
 </li>
 </ul>
-</li>
-<li><p>BeanPostProcessor接口，提供对Bean初始化的前置和后置处理方法<br>主要包含了两个方法，具体执行时间参考生命周期图</p>
+<h3 id="BeanPostProcessor接口"><a href="#BeanPostProcessor接口" class="headerlink" title="BeanPostProcessor接口"></a>BeanPostProcessor接口</h3><p>BeanPostProcessor接口提供对Bean初始化的前置和后置处理方法，主要包含了两个方法，具体执行时间参考生命周期图</p>
 <ul>
 <li><p>postProcessBeforeInitialization</p>
 </li>
 <li><p>postProcessAfterInitialization</p>
+<p>其中一些常用子类主要包含</p>
 </li>
-</ul>
-<p>一些常用子类</p>
-<ul>
 <li><p>MergedBeanDefinitionPostProcessor</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     	 * Post-process the given merged bean definition for the specified bean.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> beanDefinition the merged bean definition for the bean</span></span><br><span class="line"><span class="comment">     	 * <span class="doctag">@param</span> beanType the actual type of the managed bean instance</span></span><br><span class="line"><span class="comment">   	 * <span class="doctag">@param</span> beanName the name of the bean</span></span><br><span class="line"><span class="comment">     	 */</span></span><br><span class="line">   	<span class="function"><span class="keyword">void</span> <span class="title">postProcessMergedBeanDefinition</span><span class="params">(RootBeanDefinition beanDefinition, Class&lt;?&gt; beanType, String beanName)</span></span>;</span><br></pre></td></tr></table></figure>
-
-
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Post-process the given merged bean definition for the specified bean.</span></span><br><span class="line"><span class="comment">	 - <span class="doctag">@param</span> beanDefinition the merged bean definition for the bean</span></span><br><span class="line"><span class="comment">- <span class="doctag">@param</span> beanType the actual type of the managed bean instance</span></span><br><span class="line"><span class="comment">- <span class="doctag">@param</span> beanName the name of the bean</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">  **/</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">postProcessMergedBeanDefinition</span><span class="params">(RootBeanDefinition beanDefinition, Class&lt;?&gt; beanType, String beanName)</span></span>;</span><br></pre></td></tr></table></figure>
 
 
 </li>
 </ul>
+<ul>
+<li><p>调用时间：Bean实例化后，PopulateBean前</p>
 </li>
-</ol>
+<li><p>使用场景：通过此方法可以获取到BeanDefinition信息，那么就可以Bean初始化前对BeanDefinition进行检查，或者动态修改BeanDefinition数据，但是在Spring框架中大部分用于对BeanDefinition的读取而不是变更</p>
+<p><img src="/images/image-20190827102626847.png" alt="image-20190827102626847"></p>
 </li>
-</ol>
-<pre><code> 调用时间：Bean实例化后，PopulateBean前
-
- 使用场景：通过此方法可以获取到BeanDefinition信息，那么就可以Bean初始化前对BeanDefinition进行检查，或者动态修改BeanDefinition数据，但是在Spring框架中大部分用于对BeanDefinition的读取而不是变更
-
-![image-20190827102626847](/images/image-20190827102626847.png)</code></pre><ol start="5">
-<li><p>InitializingBean和DisposableBean接口</p>
-<p>分别对应JSR-250里面的注解* @PostConstruct和@PreDestroy注解</p>
-</li>
-<li><p>其他</p>
-<p>BeanFactoryPostProcessor</p>
+</ul>
+<h3 id="InitializingBean和DisposableBean接口"><a href="#InitializingBean和DisposableBean接口" class="headerlink" title="InitializingBean和DisposableBean接口"></a>InitializingBean和DisposableBean接口</h3><p>分别对应JSR-250里面的注解* @PostConstruct和@PreDestroy注解</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>BeanFactoryPostProcessor</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Modify the application context's internal bean factory after its standard</span></span><br><span class="line"><span class="comment">	 * initialization. All bean definitions will have been loaded, but no beans</span></span><br><span class="line"><span class="comment">	 * will have been instantiated yet. This allows for overriding or adding</span></span><br><span class="line"><span class="comment">	 * properties even to eager-initializing beans.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> beanFactory the bean factory used by the application context</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> org.springframework.beans.BeansException in case of errors</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">postProcessBeanFactory</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span> <span class="keyword">throws</span> BeansException</span>;</span><br></pre></td></tr></table></figure>
 
-
-
-
-</li>
-</ol>
 <ul>
 <li>调用时间：在Spring容器读取配置信息，但是Bean实例化前调用</li>
 <li>使用场景：在所有配置信息读取后需要对某些Bean的BeanDefiniition进行修改，例如我们通常会使用Spel表达式来定义一些字段的值，Spring中的实现就是通过BeanFactoryPostProcessor的实现类PropertyPlaceholderConfigurer来解析并修改BeanDefiniition中的MutablePropertyValues，提前对应的表达式值解析，具体参考PropertyPlaceholderConfigurer#processProperties方法</li>
 </ul>
-<ol start="2">
-<li><p>容器启动过程扩展</p>
-<ul>
+<h2 id="容器启动过程扩展"><a href="#容器启动过程扩展" class="headerlink" title="容器启动过程扩展"></a>容器启动过程扩展</h2><ul>
 <li><p>ApplicationContextInitializer</p>
 <p>Spring 容器在Environment创建成功后会在prepareContext方法内调用ApplicationContextInitializer#initialize</p>
 </li>
-</ul>
-<ul>
 <li><p>SmartInitializingSingleton</p>
 <p>调用时间：所有的单例Bean都已经实例化，但是还没有初始化</p>
 <p>使用场景：同样适用于自定义注解的处理，只不过处理的时机相对于InstantiationAwareBeanPostProcessor有了推迟。</p>
@@ -576,9 +555,7 @@
 <p>如果熟悉Spring容器启动流程的话，就了解每个方法的含义。</p>
 </li>
 </ul>
-</li>
-<li><p>ApplicationEvent和ApplicationListener</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ApplicationListener</span>&lt;<span class="title">E</span> <span class="keyword">extends</span> <span class="title">ApplicationEvent</span>&gt; <span class="keyword">extends</span> <span class="title">EventListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Handle an application event.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> event the event to respond to</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(E event)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="ApplicationEvent和ApplicationListener"><a href="#ApplicationEvent和ApplicationListener" class="headerlink" title="ApplicationEvent和ApplicationListener"></a>ApplicationEvent和ApplicationListener</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ApplicationListener</span>&lt;<span class="title">E</span> <span class="keyword">extends</span> <span class="title">ApplicationEvent</span>&gt; <span class="keyword">extends</span> <span class="title">EventListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Handle an application event.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> event the event to respond to</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(E event)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>相对于SpringApplicationRunListener来说，ApplicationListener具有更强的扩展性，并且Spring内置了很多的Event类，通过这些Event，我们可以更好的监听IOC容器的启动过程，如果要自定义ApplicationEvent来扩展，可以通过实现ApplicationEventMulticaster接口管理来ApplicationListener和主动广播Event来实现。</p>
 <p>下面是Spring Boot扩展的的ApplicationEvent</p>
@@ -605,19 +582,17 @@
 <li>ContextStartedEvent </li>
 </ul>
 <p><strong>@EventListener</strong></p>
-<p> 当然Spring 4.2版本后提供了一种更为简单的扩展方式，我们可以在作为EventListener来处理事件的方法上使用@EventListener注解,方法的参数通常代表了Event类，可以是一个任意的类型，然后通过注入ApplicationEventPublisher来发布对应的Event，</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Notify all &lt;strong&gt;matching&lt;/strong&gt; listeners registered with this</span></span><br><span class="line"><span class="comment">   * application of an application event. Events may be framework events</span></span><br><span class="line"><span class="comment">   * (such as RequestHandledEvent) or application-specific events.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> event the event to publish</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@see</span> org.springframework.web.context.support.RequestHandledEvent</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">publishEvent</span><span class="params">(ApplicationEvent event)</span> </span>&#123;</span><br><span class="line">    publishEvent((Object) event);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Notify all &lt;strong&gt;matching&lt;/strong&gt; listeners registered with this</span></span><br><span class="line"><span class="comment">   * application of an event.</span></span><br><span class="line"><span class="comment">   * &lt;p&gt;If the specified &#123;<span class="doctag">@code</span> event&#125; is not an &#123;<span class="doctag">@link</span> ApplicationEvent&#125;,</span></span><br><span class="line"><span class="comment">   * it is wrapped in a &#123;<span class="doctag">@link</span> PayloadApplicationEvent&#125;.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> event the event to publish</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@since</span> 4.2</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@see</span> PayloadApplicationEvent</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">publishEvent</span><span class="params">(Object event)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>  当然Spring 4.2版本后提供了一种更为简单的扩展方式，我们可以在作为EventListener来处理事件的方法上使用@EventListener注解,方法的参数通常代表了Event类，可以是一个任意的类型，然后通过注入ApplicationEventPublisher来发布对应的Event，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Notify all &lt;strong&gt;matching&lt;/strong&gt; listeners registered with this</span></span><br><span class="line"><span class="comment">   * application of an application event. Events may be framework events</span></span><br><span class="line"><span class="comment">   * (such as RequestHandledEvent) or application-specific events.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> event the event to publish</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@see</span> org.springframework.web.context.support.RequestHandledEvent</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">publishEvent</span><span class="params">(ApplicationEvent event)</span> </span>&#123;</span><br><span class="line">    publishEvent((Object) event);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Notify all &lt;strong&gt;matching&lt;/strong&gt; listeners registered with this</span></span><br><span class="line"><span class="comment">   * application of an event.</span></span><br><span class="line"><span class="comment">   * &lt;p&gt;If the specified &#123;<span class="doctag">@code</span> event&#125; is not an &#123;<span class="doctag">@link</span> ApplicationEvent&#125;,</span></span><br><span class="line"><span class="comment">   * it is wrapped in a &#123;<span class="doctag">@link</span> PayloadApplicationEvent&#125;.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> event the event to publish</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@since</span> 4.2</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@see</span> PayloadApplicationEvent</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">publishEvent</span><span class="params">(Object event)</span></span>;</span><br></pre></td></tr></table></figure>
 
-<p> 通过API可以看到，在Spring 4.2后支持任意类型的Event发布，而不需要实现ApplicationEvent接口</p>
-</li>
-<li><p>自动配置</p>
-<ul>
+<p>  通过API可以看到，在Spring 4.2后支持任意类型的Event发布，而不需要实现ApplicationEvent接口</p>
+<h1 id="自动配置"><a href="#自动配置" class="headerlink" title="自动配置"></a>自动配置</h1><ul>
 <li><p>spring.factories</p>
 <p>Spring Boot开箱即用的特性，是通过大量AutoXXXConfiguration类来完成一些Configuration Metadata的自动配置，而实现和扩展auto-configuration的入口便是spring.factories文件。</p>
 <p>那么，如果我们要提供一些spring-boot-starter包,并且完成自定义Configuration的auto-configuration，只需要在jar包内的<a href="https://github.com/spring-projects/spring-boot/tree/v2.1.7.RELEASE/spring-boot-project/spring-boot-autoconfigure/src/main/resources/META-INF/spring.factories" target="_blank" rel="noopener"><code>META-INF/spring.factories</code></a> 文件中增加 <strong>org.springframework.boot.autoconfigure.EnableAutoConfiguration=CustomClass</strong>就可以实现自动配置。<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html" target="_blank" rel="noopener">官方文档</a>也给出了更为详细的说明。</p>
 </li>
 </ul>
-</li>
+<ol>
 <li><p>动态Import</p>
 <p>​    除了通过AutoXXXConfiguration类来完成自动配置，我们也经常在Spring boot中看到@EnableXXX这样的注解，这些类提供了对应特性的手动开启，而底层就是在对应的@EnableXXX注解上添加@Import实现，通过@Import来实现对应Configuration类的导入。</p>
 <p>一种用法是直接通过@Import指定要加载的类。</p>
@@ -631,12 +606,12 @@
 <li><p>ImportBeanDefinitionRegistrar</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Register bean definitions as necessary based on the given annotation metadata of</span></span><br><span class="line"><span class="comment">	 * the importing &#123;<span class="doctag">@code</span> <span class="doctag">@Configuration</span>&#125; class.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;Note that &#123;<span class="doctag">@link</span> BeanDefinitionRegistryPostProcessor&#125; types may &lt;em&gt;not&lt;/em&gt; be</span></span><br><span class="line"><span class="comment">	 * registered here, due to lifecycle constraints related to &#123;<span class="doctag">@code</span> <span class="doctag">@Configuration</span>&#125;</span></span><br><span class="line"><span class="comment">	 * class processing.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> importingClassMetadata annotation metadata of the importing class</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> registry current bean definition registry</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">			AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span></span>;</span><br></pre></td></tr></table></figure>
 
-<p>   通过AnnotationMetadata参数可以获取@EnableXXX注解的一些配置信息，然后通过BeanDefinitionRegistry修改BeanDefinition，比如设置Bean的某些Field的值。</p>
+<p> 通过AnnotationMetadata参数可以获取@EnableXXX注解的一些配置信息，然后通过BeanDefinitionRegistry修改BeanDefinition，比如设置Bean的某些Field的值。</p>
 </li>
 </ul>
 </li>
-<li><p>工具类</p>
-<ul>
+</ol>
+<h1 id="工具类"><a href="#工具类" class="headerlink" title="工具类"></a>工具类</h1><ul>
 <li><p>ReflectionUtils</p>
 <p>反射工具类</p>
 </li>
@@ -656,11 +631,8 @@
 <p>Bean操作类，相对于apache commons的BeanMap类，BeanWrapper支持对嵌套属性的访问和修改，以及对Map，List特定元素的修改。</p>
 </li>
 </ul>
-</li>
-</ol>
 <p>如同<a href="https://docs.spring.io/spring/docs/5.0.x/spring-framework-reference/overview.html#overview-philosophy" target="_blank" rel="noopener">Spring 设计哲学</a>中提到的<strong>Provide choice at every level</strong>一样，Spring在设计过程中通过极强的扩展性和良好的API，我们可以即使在系统已经完成设计后，通过不同的扩展接口来无侵入对系统进行扩展和改造，并且Spring优秀的接口和类结构设计也为Spring生态的持续健康发展提供了保证，我想这也是我在API设计时应该学习和借鉴的。</p>
-<p><strong>扩展阅读</strong></p>
-<ul>
+<h1 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h1><ul>
 <li><p><a href="https://docs.spring.io/spring/docs/5.0.x/spring-framework-reference/index.html" target="_blank" rel="noopener">Spring Framework Documentation</a></p>
 </li>
 <li><p><a href="https://www.iteye.com/blog/jinnianshilongnian-1492424" target="_blank" rel="noopener">Spring开闭原则的表现-BeanPostProcessor扩展点-2</a></p>
@@ -691,9 +663,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/spring-boot/" rel="tag"># spring-boot</a>
+            <a href="/tags/Spring-Boot/" rel="tag"># Spring-Boot</a>
           
-            <a href="/tags/spring/" rel="tag"># spring</a>
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
           
             <a href="/tags/框架/" rel="tag"># 框架</a>
           
@@ -772,8 +744,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -879,6 +860,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring-Bean和BeanFactory"><span class="nav-number">2.</span> <span class="nav-text">Spring Bean和BeanFactory</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bean生命周期中的扩展点"><span class="nav-number">2.1.</span> <span class="nav-text">Bean生命周期中的扩展点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bean的生命周期"><span class="nav-number">2.1.1.</span> <span class="nav-text">Bean的生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InstantiationAwareBeanPostProcessor接口"><span class="nav-number">2.1.2.</span> <span class="nav-text">InstantiationAwareBeanPostProcessor接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Aware接口"><span class="nav-number">2.1.3.</span> <span class="nav-text">Aware接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BeanPostProcessor接口"><span class="nav-number">2.1.4.</span> <span class="nav-text">BeanPostProcessor接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InitializingBean和DisposableBean接口"><span class="nav-number">2.1.5.</span> <span class="nav-text">InitializingBean和DisposableBean接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">2.1.6.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器启动过程扩展"><span class="nav-number">2.2.</span> <span class="nav-text">容器启动过程扩展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ApplicationEvent和ApplicationListener"><span class="nav-number">3.</span> <span class="nav-text">ApplicationEvent和ApplicationListener</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自动配置"><span class="nav-number">4.</span> <span class="nav-text">自动配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工具类"><span class="nav-number">5.</span> <span class="nav-text">工具类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩展阅读"><span class="nav-number">6.</span> <span class="nav-text">扩展阅读</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
@@ -1018,7 +1016,7 @@
       var disqus_config = function () {
         this.page.url = "http://jaryur.github.io/2019/08/19/thoughts-of-spring-extention/";
         this.page.identifier = "2019/08/19/thoughts-of-spring-extention/";
-        this.page.title = '常见的基于Spring和Spring Boot框架的集成与扩展点';
+        this.page.title = '基于Spring和Spring Boot框架的集成与扩展点';
         };
       function loadComments () {
         var d = document, s = d.createElement('script');
