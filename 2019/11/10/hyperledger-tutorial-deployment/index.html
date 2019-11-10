@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="背景HyperLedger从2015年12月发起，经过多年的发展，已经日渐成熟，到目前为止已经成为区块链领域企业级产品开发首选技术框架，虽然关于Hyperledger底层架构能否可以被称作真正的区块链技术，网络上有些异议。作为一个开发人员，如果要涉足区块链开发领域，HyperLedger是一个必须了解的技术框架。 今日，我在自己的Mac上部署并搭建了一套完整的HyperLedger区块链网络，然后">
+<meta name="keywords" content="HyperLedger,Blockchain">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HyperLedger示例部署和简单合约开发问题总结">
+<meta property="og:url" content="http://jaryur.github.io/2019/11/10/hyperledger-tutorial-deployment/index.html">
+<meta property="og:site_name" content="山中小屋">
+<meta property="og:description" content="背景HyperLedger从2015年12月发起，经过多年的发展，已经日渐成熟，到目前为止已经成为区块链领域企业级产品开发首选技术框架，虽然关于Hyperledger底层架构能否可以被称作真正的区块链技术，网络上有些异议。作为一个开发人员，如果要涉足区块链开发领域，HyperLedger是一个必须了解的技术框架。 今日，我在自己的Mac上部署并搭建了一套完整的HyperLedger区块链网络，然后">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://jaryur.github.io/images/hyperledger_commercial_paper.diagram.8.png">
+<meta property="og:updated_time" content="2019-11-10T07:43:20.674Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HyperLedger示例部署和简单合约开发问题总结">
+<meta name="twitter:description" content="背景HyperLedger从2015年12月发起，经过多年的发展，已经日渐成熟，到目前为止已经成为区块链领域企业级产品开发首选技术框架，虽然关于Hyperledger底层架构能否可以被称作真正的区块链技术，网络上有些异议。作为一个开发人员，如果要涉足区块链开发领域，HyperLedger是一个必须了解的技术框架。 今日，我在自己的Mac上部署并搭建了一套完整的HyperLedger区块链网络，然后">
+<meta name="twitter:image" content="http://jaryur.github.io/images/hyperledger_commercial_paper.diagram.8.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://jaryur.github.io/2019/11/10/hyperledger-tutorial-deployment/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>HyperLedger示例部署和简单合约开发问题总结 | 山中小屋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">山中小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">博学之，审问之，慎思之，明辨之，笃行之</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jaryur.github.io/2019/11/10/hyperledger-tutorial-deployment/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="程先森">
+      <meta itemprop="description" content="博学之，审问之，慎思之，明辨之，笃行之">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="山中小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HyperLedger示例部署和简单合约开发问题总结
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-10 15:32:52 / 修改时间：15:43:20" itemprop="dateCreated datePublished" datetime="2019-11-10T15:32:52+08:00">2019-11-10</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/区块链/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/10/hyperledger-tutorial-deployment/#comments" itemprop="discussionUrl">
+                
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/11/10/hyperledger-tutorial-deployment/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>HyperLedger从2015年12月发起，经过多年的发展，已经日渐成熟，到目前为止已经成为区块链领域企业级产品开发首选技术框架，虽然关于Hyperledger底层架构能否可以被称作真正的区块链技术，网络上有些异议。作为一个开发人员，如果要涉足区块链开发领域，HyperLedger是一个必须了解的技术框架。</p>
+<p>今日，我在自己的Mac上部署并搭建了一套完整的HyperLedger区块链网络，然后开发了一个简单的智能合约，部署到自定义的一个HyperLedger Network上，虽然HyperLedger中的众多模块都是基于Docker做部署，但是由于HyperLedger架构存在众多的角色，整个网络如果想要完整运行，依赖多个配置文件，如果没有理解了架构中的组件，想要搭建一个自定义的Network，而不是仅限于跑一下官方的demo那么简单，中间还是会遇到很多问题，这篇文件，简单总结了我在部署和运行过程中遇到的一些问题。</p>
+<h2 id="本地部署流程"><a href="#本地部署流程" class="headerlink" title="本地部署流程"></a>本地部署流程</h2><p>这是官方文档中Commercial Paper示例的一个交互图，在了解了基本的概念后，还需要知道在<strong>HyperLedger Fabric Network</strong> 中完成一笔交易需要哪些角色，整个流程是怎么进行的。</p>
+<p><img src="/images/hyperledger_commercial_paper.diagram.8.png" alt="commercialpaper.application"></p>
+<p>我在本地部署的过程中除了部署官方demo中的Fabcar，Commercial Paper示例，还自己尝试着修改并搭建了一个简单的自定义fabric network，并部署了自己编写的合约。主要做了以下工作</p>
+<ol>
+<li>参考fabic-sample目录下的first-network配置，创建了包含两个新的Org的network，涉及到了docker-compose-base.yaml，configtx.yraml，crypto-config.yaml等配置文件，其中configtx.yaml文件用于配置,crypto-config.yaml文件用于在crypto-config生成Org，Peer，Orderer等配置文件，configtx.yraml文件用于在chanel-artifacts目录下完成genesis block创建和channel 初始化等交易；以上动作都是在byfn.sh脚本中执行完成，我们只需要给出正确的配置文件即可。</li>
+<li>参考fabcar的startFabric.sh文件，创建新network的启动脚本，修改脚本文件中docker相关参数，保证org，peer，mspId等与上一步的配置一致，否则可能会启动失败。</li>
+<li>编写自己的合约，部署到fabic-sample/chaincode目录下，这个目录是在startFabric.sh中CC_SRC_PATH指定的，如果部署到了非当前目录，请确保volumes配置能争取映射</li>
+<li>执行startFabric.sh，启动fabric network，install和instantiate chaincode，执行initLedger合约初始化函数调用，也可以通过<em>peer chaincode invoke</em>执行其他合约函数调用</li>
+<li>参考fabcar java application代码，编写java application代码，接入到fabric network并执行合约函数的调用，测试合约是否正常运行</li>
+<li>部署hyperLedger blockchain-explorer，参考官方github里面的部署过程，修改app/platform/fabric/connection-profile/connection-profile.json，确保channel和organizations，peers，certificateAuthorities配置</li>
+<li>通过java application代码，执行合约函数调用，发起交易修改区块链上数据</li>
+<li>通过hyperLedger blockchain-explorer查看链上数据</li>
+</ol>
+<h2 id="问题总结"><a href="#问题总结" class="headerlink" title="问题总结"></a>问题总结</h2><p>其中在部署chaincode，执行合约调用，以及部署blockchain-explorer过程中会遇到很多问题，大部分都是由于配置缺失或者环境问题导致，下面是我遇到的一些难以解决的问题总结。</p>
+<ol>
+<li><p>grpc和http地址错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">getConfigBlock for channel mychannel failed with peer peer0.dwd.example.com.  Status FAILURE, details: Channel Channel&#123;id: 5, name: dwd-channel&#125; Sending proposal with transaction: c44ce1fad75cd6305cfe9d4540373d6100e78e3fa5c8363a4e2ff91f3486c7c4 to Peer&#123; id: 6, name: peer0.dwd.example.com, channelName: dwd-channel, url: grpc://localhost:7051, mspid: DwdMSP&#125; failed because of: gRPC failure=Status&#123;code=INTERNAL, description=http2 exception, cause=io.netty.handler.codec.http2.Http2Exception: First received frame was not SETTINGS. Hex dump for first 5 bytes: 1503010002</span><br><span class="line"></span><br><span class="line">TLS handshake failed with error tls: first record does not look like a TLS handshake server=PeerServer remoteaddress=172.23.0.1:43812</span><br></pre></td></tr></table></figure>
+
+<p>解决方案：修改原配置文件中peers，org等节点下的的grpc和http协议为grpcs和https</p>
+</li>
+<li><p>blockchain-explorer无法连接fabric网络</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">2019-11-08T05:54:29.319Z - error: [FabricCAClientService.js]: Invalid enroll request, missing enrollmentID</span><br><span class="line">&apos;Error instantiating FabricCAServices &apos;</span><br><span class="line">2019-11-08T05:54:29.345Z - error: [Channel.js]: Error: No identity has been assigned to this client</span><br><span class="line">.......</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">************************************ initializeDetachClient *************************************************</span><br><span class="line">Error : Failed to connect client peer, please check the configuration and peer status</span><br><span class="line">Info :  Explorer will continue working with only DB data</span><br><span class="line">************************************** initializeDetachClient ************************************************</span><br><span class="line"></span><br><span class="line">FabricUtils.createDetachClient</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Please open web browser to access ：http://localhost:8080/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pid is 23715</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">FabricConfig, this.config.channels  dwd-channel</span><br><span class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; Explorer Error &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line">Error :  [ &apos;Default client peer is down and no channel details available database&apos; ]</span><br></pre></td></tr></table></figure>
+
+<p>解决方案：需要在Organizations下面配置正确的adminPrivateKey和signedCert，例如</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">"organizations":</span> <span class="string">&#123;</span></span><br><span class="line"><span class="attr">        "Org1MSP":</span> <span class="string">&#123;</span></span><br><span class="line"><span class="attr">                "mspid":</span> <span class="string">"Org1MSP"</span><span class="string">,</span></span><br><span class="line"><span class="attr">                "fullpath":</span> <span class="literal">true</span><span class="string">,</span></span><br><span class="line"><span class="attr">                "adminPrivateKey":</span> <span class="string">&#123;</span></span><br><span class="line"><span class="attr">                        "path":</span> <span class="string">"/Users/jaryur/go/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/b8dbe986004cef4382c345ff9886d4e3d115ee7fb6344ef316dd7c9397933698_sk"</span></span><br><span class="line">                <span class="string">&#125;,</span></span><br><span class="line"><span class="attr">                "signedCert":</span> <span class="string">&#123;</span></span><br><span class="line"><span class="attr">                        "path":</span> <span class="string">"/Users/jaryur/go/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"</span></span><br><span class="line">                <span class="string">&#125;</span></span><br><span class="line">        <span class="string">&#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>node版本错误导致blockchain-explorer启动失败</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123; Error: Failed to load gRPC binary module because it was not installed for the current system</span><br><span class="line">Expected directory: node-v57-linux-x64-glibc</span><br><span class="line">Found: [node-v64-linux-x64-glibc]</span><br></pre></td></tr></table></figure>
+
+<p>解决方案：blockchain-explorer文档中要求node版本是8.11.x，所以需要安装nvm，并修改当前node版本为8.11.x</p>
+</li>
+<li><p>peer节点未全部启动导致合约函数执行失败</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ENDORSEMENT_POLICY_FAILURE error on on invocation of chaincode functions</span><br></pre></td></tr></table></figure>
+
+<p>解决方案：查看在执行<em>peer chaincode instantiate</em> 时候Endorsement Policy，如果是配置了多个peer，例如  <strong>-P “AND (‘Org1MSP.peer’,’Org2MSP.peer’)</strong> ，可以通过docker ps命令Org1和Org2和peer节点正常启动。因为<em>peer chaincode instantiate</em> 执行需要一段时间，有时候会卡住，导致未启动所有peer节点，最后交易得到无法验证</p>
+</li>
+<li><p>java 合约部署失败</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stat /root/chaincode-java/start: no such file or directory</span><br></pre></td></tr></table></figure>
+
+<p>目前未解决，所以我后面合约用javaScript编写</p>
+</li>
+</ol>
+<h2 id="两个配置文件"><a href="#两个配置文件" class="headerlink" title="两个配置文件"></a>两个配置文件</h2><p>除了以上问题，还有其他一些因为配置问题出错导致的异常，为了便于定位问题，可以通过在docker命令中增加<strong>-e FABRIC_LOGGING_SPEC=DEBUG</strong>参数来修改日志级别。另外也可以通过commerial-paper示例中的<em>monitordocker.sh</em> 文件来查看所有docker container的日志</p>
+<p>另外，在通过java调用合约函数过程中发现，fabcar示例中的network-config.yml和connection.json文件缺少某些配置信息，导致无法invoke 合约函数，java application中<strong>fabric-gateway-java</strong> 依赖版本是<strong>1.4.0</strong>，下面给出测试成功的network-config.yml和connection.json配置。</p>
+<p><strong>network-config.yml</strong>文件</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#network-config.yml配置</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">test-network</span></span><br><span class="line"><span class="attr">version:</span> <span class="number">1.0</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">channels:</span></span><br><span class="line">  <span class="comment"># name of the channel</span></span><br><span class="line"><span class="attr">  test-channel:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">client:</span></span><br><span class="line"><span class="attr">  organization:</span> <span class="string">TestOrg1</span></span><br><span class="line"><span class="attr">  connection:</span></span><br><span class="line"><span class="attr">    timeout:</span></span><br><span class="line"><span class="attr">      peer:</span></span><br><span class="line"><span class="attr">        endorser:</span> <span class="string">'300'</span></span><br><span class="line"><span class="attr">organizations:</span></span><br><span class="line"><span class="attr">  TestOrg1:</span></span><br><span class="line"><span class="attr">    mspid:</span> <span class="string">TestOrg1MSP</span></span><br><span class="line"><span class="attr">    peers:</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">peer0.testOrg1.example.com</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">peer1.testOrg1.example.com</span></span><br><span class="line"><span class="attr">    certificateAuthorities:</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">ca.testOrg1.example.com</span></span><br><span class="line"><span class="attr">  TestOrg2:</span></span><br><span class="line"><span class="attr">    mspid:</span> <span class="string">TestOrg2MSP</span></span><br><span class="line"><span class="attr">    peers:</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">peer0.testOrg2.example.com</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">peer1.testOrg2.example.com</span></span><br><span class="line"><span class="attr">    certificateAuthorities:</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">ca.testOrg2.example.com</span></span><br><span class="line"><span class="attr">peers:</span></span><br><span class="line">  <span class="string">peer0.testOrg1.example.com:</span></span><br><span class="line"><span class="attr">    url:</span> <span class="attr">grpcs://127.0.0.1:7051</span></span><br><span class="line"><span class="attr">    tlsCACerts:</span></span><br><span class="line"><span class="attr">      pem:</span> <span class="string">|</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span><span class="attr">    grpcOptions:</span></span><br><span class="line"><span class="attr">      ssl-target-name-override:</span> <span class="string">peer0.testOrg1.example.com</span></span><br><span class="line"><span class="attr">      hostnameOverride:</span> <span class="string">peer0.testOrg1.example.com</span></span><br><span class="line">  <span class="string">peer1.testOrg1.example.com:</span></span><br><span class="line"><span class="attr">    url:</span> <span class="attr">grpcs://127.0.0.1:8051</span></span><br><span class="line"><span class="attr">    tlsCACerts:</span></span><br><span class="line"><span class="attr">      pem:</span> <span class="string">|</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span><span class="attr">    grpcOptions:</span></span><br><span class="line"><span class="attr">      ssl-target-name-override:</span> <span class="string">peer1.testOrg1.example.com</span></span><br><span class="line"><span class="attr">      hostnameOverride:</span> <span class="string">peer1.testOrg1.example.com</span></span><br><span class="line">  <span class="string">peer0.testOrg2.example.com:</span></span><br><span class="line"><span class="attr">    url:</span> <span class="attr">grpcs://127.0.0.1:7056</span></span><br><span class="line"><span class="attr">    tlsCACerts:</span></span><br><span class="line"><span class="attr">      pem:</span> <span class="string">|</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span><span class="attr">    grpcOptions:</span></span><br><span class="line"><span class="attr">      ssl-target-name-override:</span> <span class="string">peer0.testOrg2.example.com</span></span><br><span class="line"><span class="attr">      hostnameOverride:</span> <span class="string">peer0.testOrg2.example.com</span></span><br><span class="line">  <span class="string">peer1.testOrg2.example.com:</span></span><br><span class="line"><span class="attr">    url:</span> <span class="attr">grpcs://127.0.0.1:8056</span></span><br><span class="line"><span class="attr">    tlsCACerts:</span></span><br><span class="line"><span class="attr">      pem:</span> <span class="string">|</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span><span class="attr">    grpcOptions:</span></span><br><span class="line"><span class="attr">      ssl-target-name-override:</span> <span class="string">peer1.testOrg2.example.com</span></span><br><span class="line"><span class="attr">      hostnameOverride:</span> <span class="string">peer1.testOrg2.example.com</span></span><br><span class="line"><span class="attr">certificateAuthorities:</span></span><br><span class="line">  <span class="string">ca.testOrg1.example.com:</span></span><br><span class="line"><span class="attr">    url:</span> <span class="attr">https://127.0.0.1:7054</span></span><br><span class="line"><span class="attr">    caName:</span> <span class="string">ca-testOrg1</span></span><br><span class="line"><span class="attr">    tlsCACerts:</span></span><br><span class="line"><span class="attr">      pem:</span> <span class="string">|</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span><span class="attr">    httpOptions:</span></span><br><span class="line"><span class="attr">      verify:</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="string">ca.testOrg2.example.com:</span></span><br><span class="line"><span class="attr">    url:</span> <span class="attr">http://127.0.0.1:8054</span></span><br><span class="line"><span class="attr">    caName:</span> <span class="string">ca-testOrg2</span></span><br><span class="line"><span class="attr">    tlsCACerts:</span></span><br><span class="line"><span class="attr">      pem:</span> <span class="string">|</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span><span class="attr">    httpOptions:</span></span><br><span class="line"><span class="attr">      verify:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>connection.json</strong> 配置文件（blockchain-explorer配置文件与此文件类似）</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"test-network"</span>,</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"1.0.0"</span>,</span><br><span class="line">    <span class="attr">"client"</span>: &#123;</span><br><span class="line">        <span class="attr">"tlsEnable"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">"adminUser"</span>: <span class="string">"admin"</span>,</span><br><span class="line">        <span class="attr">"adminPassword"</span>: <span class="string">"adminpw"</span>,</span><br><span class="line">        <span class="attr">"enableAuthentication"</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="attr">"organization"</span>: <span class="string">"TestOrg1"</span>,</span><br><span class="line">        <span class="attr">"connection"</span>: &#123;</span><br><span class="line">            <span class="attr">"timeout"</span>: &#123;</span><br><span class="line">                <span class="attr">"peer"</span>: &#123;</span><br><span class="line">                    <span class="attr">"endorser"</span>: <span class="string">"300"</span></span><br><span class="line">                &#125;,</span><br><span class="line">            <span class="attr">"orderer"</span>: <span class="string">"300"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"channels"</span>:&#123;</span><br><span class="line">        <span class="attr">"test-channel"</span>: &#123;</span><br><span class="line">            <span class="attr">"orderers"</span>: [<span class="string">"orderer.example.com"</span>],</span><br><span class="line">            <span class="attr">"peers"</span>: &#123;</span><br><span class="line">                <span class="attr">"peer0.testOrg1.example.com"</span>: &#123;&#125;,</span><br><span class="line">                <span class="attr">"peer1.testOrg1.example.com"</span>: &#123;&#125;,</span><br><span class="line">                <span class="attr">"peer0.testOrg2.example.com"</span>: &#123;&#125;,</span><br><span class="line">                <span class="attr">"peer1.testOrg2.example.com"</span>: &#123;&#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"orderers"</span>:&#123;</span><br><span class="line">       <span class="attr">"orderer.example.com"</span>: &#123;</span><br><span class="line">           <span class="attr">"url"</span>: <span class="string">"grpcs://127.0.0.1:7050"</span>,</span><br><span class="line">           <span class="attr">"tlsCACerts"</span>: &#123;</span><br><span class="line">                <span class="attr">"path"</span>: <span class="string">"/Users/jaryur/go/src/github.com/hyperledger/fabric-samples/test-network/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"grpcOptions"</span>: &#123;</span><br><span class="line">                <span class="attr">"ssl-target-name-override"</span>: <span class="string">"orderer.example.com"</span>,</span><br><span class="line">                <span class="attr">"hostnameOverride"</span>: <span class="string">"orderer.example.com"</span></span><br><span class="line">            &#125;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"client"</span>: &#123;</span><br><span class="line">        <span class="attr">"organization"</span>: <span class="string">"TestOrg1"</span>,</span><br><span class="line">        <span class="attr">"connection"</span>: &#123;</span><br><span class="line">            <span class="attr">"timeout"</span>: &#123;</span><br><span class="line">                <span class="attr">"peer"</span>: &#123;</span><br><span class="line">                    <span class="attr">"endorser"</span>: <span class="string">"300"</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"organizations"</span>: &#123;</span><br><span class="line">        <span class="attr">"TestOrg1"</span>: &#123;</span><br><span class="line">            <span class="attr">"mspid"</span>: <span class="string">"TestOrg1MSP"</span>,</span><br><span class="line">            <span class="attr">"peers"</span>: [</span><br><span class="line">                <span class="string">"peer0.testOrg1.example.com"</span>,</span><br><span class="line">                <span class="string">"peer1.testOrg1.example.com"</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="attr">"certificateAuthorities"</span>: [</span><br><span class="line">                <span class="string">"ca.testOrg1.example.com"</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"TestOrg2"</span>: &#123;</span><br><span class="line">            <span class="attr">"mspid"</span>: <span class="string">"TestOrg2MSP"</span>,</span><br><span class="line">            <span class="attr">"peers"</span>: [</span><br><span class="line">                <span class="string">"peer0.testOrg2.example.com"</span>,</span><br><span class="line">                <span class="string">"peer1.testOrg2.example.com"</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="attr">"certificateAuthorities"</span>: [</span><br><span class="line">                <span class="string">"ca.testOrg2.example.com"</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"peers"</span>: &#123;</span><br><span class="line">        <span class="attr">"peer0.testOrg1.example.com"</span>: &#123;</span><br><span class="line">            <span class="attr">"url"</span>: <span class="string">"grpcs://127.0.0.1:7051"</span>,</span><br><span class="line">            <span class="attr">"tlsCACerts"</span>: &#123;</span><br><span class="line">                <span class="attr">"path"</span>: <span class="string">"/Users/jaryur/go/src/github.com/hyperledger/fabric-samples/test-network/crypto-config/peerOrganizations/testOrg1.example.com/peers/peer0.testOrg1.example.com/msp/tlscacerts/tlsca.testOrg1.example.com-cert.pem"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"grpcOptions"</span>: &#123;</span><br><span class="line">                <span class="attr">"ssl-target-name-override"</span>: <span class="string">"peer0.testOrg1.example.com"</span>,</span><br><span class="line">                <span class="attr">"hostnameOverride"</span>: <span class="string">"peer0.testOrg1.example.com"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"peer1.testOrg1.example.com"</span>: &#123;</span><br><span class="line">            <span class="attr">"url"</span>: <span class="string">"grpcs://127.0.0.1:8051"</span>,</span><br><span class="line">            <span class="attr">"tlsCACerts"</span>: &#123;</span><br><span class="line">                <span class="attr">"path"</span>: <span class="string">"/Users/jaryur/go/src/github.com/hyperledger/fabric-samples/test-network/crypto-config/peerOrganizations/testOrg1.example.com/peers/peer1.testOrg1.example.com/msp/tlscacerts/tlsca.testOrg1.example.com-cert.pem"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"grpcOptions"</span>: &#123;</span><br><span class="line">                <span class="attr">"ssl-target-name-override"</span>: <span class="string">"peer1.testOrg1.example.com"</span>,</span><br><span class="line">                <span class="attr">"hostnameOverride"</span>: <span class="string">"peer1.testOrg1.example.com"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"peer0.testOrg2.example.com"</span>: &#123;</span><br><span class="line">            <span class="attr">"url"</span>: <span class="string">"grpcs://127.0.0.1:9051"</span>,</span><br><span class="line">            <span class="attr">"tlsCACerts"</span>: &#123;</span><br><span class="line">                <span class="attr">"path"</span>: <span class="string">"/Users/jaryur/go/src/github.com/hyperledger/fabric-samples/test-network/crypto-config/peerOrganizations/testOrg2.example.com/peers/peer0.testOrg2.example.com/msp/tlscacerts/tlsca.testOrg2.example.com-cert.pem"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"grpcOptions"</span>: &#123;</span><br><span class="line">                <span class="attr">"ssl-target-name-override"</span>: <span class="string">"peer0.testOrg2.example.com"</span>,</span><br><span class="line">                <span class="attr">"hostnameOverride"</span>: <span class="string">"peer0.testOrg2.example.com"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"peer1.testOrg2.example.com"</span>: &#123;</span><br><span class="line">            <span class="attr">"url"</span>: <span class="string">"grpcs://127.0.0.1:10051"</span>,</span><br><span class="line">            <span class="attr">"tlsCACerts"</span>: &#123;</span><br><span class="line">                <span class="attr">"path"</span>: <span class="string">"/Users/jaryur/go/src/github.com/hyperledger/fabric-samples/test-network/crypto-config/peerOrganizations/testOrg2.example.com/peers/peer1.testOrg2.example.com/msp/tlscacerts/tlsca.testOrg2.example.com-cert.pem"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"grpcOptions"</span>: &#123;</span><br><span class="line">                <span class="attr">"ssl-target-name-override"</span>: <span class="string">"peer1.testOrg2.example.com"</span>,</span><br><span class="line">                <span class="attr">"hostnameOverride"</span>: <span class="string">"peer1.testOrg2.example.com"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"certificateAuthorities"</span>: &#123;</span><br><span class="line">        <span class="attr">"ca.testOrg1.example.com"</span>: &#123;</span><br><span class="line">            <span class="attr">"url"</span>: <span class="string">"https://127.0.0.1:7054"</span>,</span><br><span class="line">            <span class="attr">"caName"</span>: <span class="string">"ca-testOrg1"</span>,</span><br><span class="line">            <span class="attr">"tlsCACerts"</span>: &#123;</span><br><span class="line">                <span class="attr">"path"</span>: <span class="string">"/Users/jaryur/go/src/github.com/hyperledger/fabric-samples/test-network/crypto-config/peerOrganizations/testOrg1.example.com/tlsca/tlsca.testOrg1.example.com-cert.pem"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"httpOptions"</span>: &#123;</span><br><span class="line">                <span class="attr">"verify"</span>: <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"ca.testOrg2.example.com"</span>: &#123;</span><br><span class="line">            <span class="attr">"url"</span>: <span class="string">"https://127.0.0.1:8054"</span>,</span><br><span class="line">            <span class="attr">"caName"</span>: <span class="string">"ca-testOrg2"</span>,</span><br><span class="line">            <span class="attr">"tlsCACerts"</span>: &#123;</span><br><span class="line">                <span class="attr">"path"</span>: <span class="string">"/Users/jaryur/go/src/github.com/hyperledger/fabric-samples/test-network/crypto-config/peerOrganizations/testOrg2.example.com/tlsca/tlsca.testOrg2.example.com-cert.pem"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"httpOptions"</span>: &#123;</span><br><span class="line">                <span class="attr">"verify"</span>: <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在整个学习过程中，我基本都是通过官方文档了解HyperLedger的基本架构和概念，然后通过<strong>Developing Applications</strong> 和<strong>Tutorials</strong> 部分熟悉了启动fabric网络和部署，实例化，执行合约等这些过程是怎么发生，然后自己编写自己的chaincode，java application并启动运行，在其中遇到了很多问题，也通过解决问题对HyperLedger有了更清晰的认识，但是如果要深入到底层实现原理，需要对源码进行研究。</p>
+<p>HyperLedger和传统区块链中的Bitcoin和Ethereum在架构上都有较大的区别，因此HyperLedger更多的适用于企业级联盟链的开发，尤其是实现“无币区块链”，目前国内在政策的号召下，区块链可能会成为一个新的技术热点，但是目前相关开发人员还是相对较少，这对我们来说也是一个新的机遇。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HyperLedger/" rel="tag"># HyperLedger</a>
+          
+            <a href="/tags/Blockchain/" rel="tag"># Blockchain</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/10/double-check-locking-issue-in-java/" rel="next" title="Java中的Happens-Before，重排序和DCL问题">
+                <i class="fa fa-chevron-left"></i> Java中的Happens-Before，重排序和DCL问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">程先森</p>
+              <p class="site-description motion-element" itemprop="description">博学之，审问之，慎思之，明辨之，笃行之</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地部署流程"><span class="nav-number">2.</span> <span class="nav-text">本地部署流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题总结"><span class="nav-number">3.</span> <span class="nav-text">问题总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两个配置文件"><span class="nav-number">4.</span> <span class="nav-text">两个配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">程先森</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+  
+
+  
+    <script>
+      var disqus_config = function () {
+        this.page.url = "http://jaryur.github.io/2019/11/10/hyperledger-tutorial-deployment/";
+        this.page.identifier = "2019/11/10/hyperledger-tutorial-deployment/";
+        this.page.title = 'HyperLedger示例部署和简单合约开发问题总结';
+        };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

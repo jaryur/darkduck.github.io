@@ -96,25 +96,25 @@
 
 
 
-  <meta name="description" content="2017年犹如人生新的一章，划上了句号，这一年有时候觉得很长，有时候觉得平淡到如同开水，有时候觉得焦虑，有时候甚至灵魂都没有喘息的机会，领悟到了很多，给自己时间让学会了去面对和思考自己一直在逃避的东西。  换了份新工作 逃离了呆了五年的广州，想起当时被迫来到这个陌生的城市，经历过的荒诞的生活。在上家公司呆了两年多，大多时候很忙碌却总心生恐惧感，不仅来自于对职业生涯的茫然，还有来自于现实不经意间">
-<meta name="keywords" content="个人,生活,年度">
+  <meta name="description" content="redis从2009年诞生到现在已经走过将近10年，从最开始大家在讨论nosql和传统关系数据库孰优孰劣，到现在大家谈起分布式锁，缓存纷纷将Redis作为其第一选择，服务端面试中Redis也作为一项必备能力，而如今Redis 5.0已经发布，越来越多的新特性被加入，我完整的观察到并参与了一项新的开源产品从走入大家的视野到被接受，之后再流行的整个过程，也同时见证了memcache的日薄西山。 但是在">
+<meta name="keywords" content="Redis,Best-Practice">
 <meta property="og:type" content="article">
-<meta property="og:title" content="写给不平凡的2017">
-<meta property="og:url" content="http://jaryur.github.io/2018/01/01/to-my-2017/index.html">
+<meta property="og:title" content="Redis实践中的一些总结和建议">
+<meta property="og:url" content="http://jaryur.github.io/2018/12/01/practicing_tips_for_redis/index.html">
 <meta property="og:site_name" content="山中小屋">
-<meta property="og:description" content="2017年犹如人生新的一章，划上了句号，这一年有时候觉得很长，有时候觉得平淡到如同开水，有时候觉得焦虑，有时候甚至灵魂都没有喘息的机会，领悟到了很多，给自己时间让学会了去面对和思考自己一直在逃避的东西。  换了份新工作 逃离了呆了五年的广州，想起当时被迫来到这个陌生的城市，经历过的荒诞的生活。在上家公司呆了两年多，大多时候很忙碌却总心生恐惧感，不仅来自于对职业生涯的茫然，还有来自于现实不经意间">
+<meta property="og:description" content="redis从2009年诞生到现在已经走过将近10年，从最开始大家在讨论nosql和传统关系数据库孰优孰劣，到现在大家谈起分布式锁，缓存纷纷将Redis作为其第一选择，服务端面试中Redis也作为一项必备能力，而如今Redis 5.0已经发布，越来越多的新特性被加入，我完整的观察到并参与了一项新的开源产品从走入大家的视野到被接受，之后再流行的整个过程，也同时见证了memcache的日薄西山。 但是在">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-12-02T16:34:07.000Z">
+<meta property="og:updated_time" content="2019-10-18T01:20:16.145Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="写给不平凡的2017">
-<meta name="twitter:description" content="2017年犹如人生新的一章，划上了句号，这一年有时候觉得很长，有时候觉得平淡到如同开水，有时候觉得焦虑，有时候甚至灵魂都没有喘息的机会，领悟到了很多，给自己时间让学会了去面对和思考自己一直在逃避的东西。  换了份新工作 逃离了呆了五年的广州，想起当时被迫来到这个陌生的城市，经历过的荒诞的生活。在上家公司呆了两年多，大多时候很忙碌却总心生恐惧感，不仅来自于对职业生涯的茫然，还有来自于现实不经意间">
+<meta name="twitter:title" content="Redis实践中的一些总结和建议">
+<meta name="twitter:description" content="redis从2009年诞生到现在已经走过将近10年，从最开始大家在讨论nosql和传统关系数据库孰优孰劣，到现在大家谈起分布式锁，缓存纷纷将Redis作为其第一选择，服务端面试中Redis也作为一项必备能力，而如今Redis 5.0已经发布，越来越多的新特性被加入，我完整的观察到并参与了一项新的开源产品从走入大家的视野到被接受，之后再流行的整个过程，也同时见证了memcache的日薄西山。 但是在">
 
 
 
 
 
 
-  <link rel="canonical" href="http://jaryur.github.io/2018/01/01/to-my-2017/">
+  <link rel="canonical" href="http://jaryur.github.io/2018/12/01/practicing_tips_for_redis/">
 
 
 
@@ -124,7 +124,7 @@
   };
 </script>
 
-  <title>写给不平凡的2017 | 山中小屋</title>
+  <title>Redis实践中的一些总结和建议 | 山中小屋</title>
   
 
 
@@ -344,7 +344,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://jaryur.github.io/2018/01/01/to-my-2017/">
+    <link itemprop="mainEntityOfPage" href="http://jaryur.github.io/2018/12/01/practicing_tips_for_redis/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="程先森">
@@ -361,7 +361,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">写给不平凡的2017
+          <h1 class="post-title" itemprop="name headline">Redis实践中的一些总结和建议
 
               
             
@@ -387,7 +387,7 @@
                 
               
 
-              <time title="创建时间：2018-01-01 18:21:40" itemprop="dateCreated datePublished" datetime="2018-01-01T18:21:40+08:00">2018-01-01</time>
+              <time title="创建时间：2018-12-01 23:00:34" itemprop="dateCreated datePublished" datetime="2018-12-01T23:00:34+08:00">2018-12-01</time>
             
 
             
@@ -404,7 +404,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-12-03 00:34:07" itemprop="dateModified" datetime="2018-12-03T00:34:07+08:00">2018-12-03</time>
+                <time title="修改时间：2019-10-18 09:20:16" itemprop="dateModified" datetime="2019-10-18T09:20:16+08:00">2019-10-18</time>
               
             
           </span>
@@ -421,7 +421,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/个人总结/" itemprop="url" rel="index"><span itemprop="name">个人总结</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/实践/" itemprop="url" rel="index"><span itemprop="name">实践</span></a></span>
 
                 
                 
@@ -436,9 +436,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/01/01/to-my-2017/#comments" itemprop="discussionUrl">
+                <a href="/2018/12/01/practicing_tips_for_redis/#comments" itemprop="discussionUrl">
                 
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/01/to-my-2017/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/01/practicing_tips_for_redis/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -466,30 +466,74 @@
       
 
       
-        <p>  2017年犹如人生新的一章，划上了句号，这一年有时候觉得很长，有时候觉得平淡到如同开水，有时候觉得焦虑，有时候甚至灵魂都没有喘息的机会，领悟到了很多，给自己时间让学会了去面对和思考自己一直在逃避的东西。</p>
+        <p>redis从2009年诞生到现在已经走过将近10年，从最开始大家在讨论nosql和传统关系数据库孰优孰劣，到现在大家谈起分布式锁，缓存纷纷将Redis作为其第一选择，服务端面试中Redis也作为一项必备能力，而如今Redis 5.0已经发布，越来越多的新特性被加入，我完整的观察到并参与了一项新的开源产品从走入大家的视野到被接受，之后再流行的整个过程，也同时见证了memcache的日薄西山。<br> 但是在工作中发现很多人只是了解一些Redis的基本使用，也并未完整的阅读过Redis的官方文档，对于一些命令不熟悉，不同场景下滥用不合理的数据结构，对一些新的特性似乎也不会去关注。鉴于自己对Redis的一些了解和实践经验，并收集了网络上一些资料，总结了一些使用建议。</p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><ol>
+<li><p>SET key value [expiration EX seconds|PX milliseconds][NX|XX]</p>
+<p>Redis 2.6.12版本后的Set命令支持过期时间等参数，不必再像以前一样分为set和expire两个命令</p>
+</li>
+<li><p>bitmap</p>
 <ul>
-<li><p>换了份新工作</p>
-<p>逃离了呆了五年的广州，想起当时被迫来到这个陌生的城市，经历过的荒诞的生活。在上家公司呆了两年多，大多时候很忙碌却总心生恐惧感，不仅来自于对职业生涯的茫然，还有来自于现实不经意间提醒你这个世界是多么的残酷，来自于灵魂深处离自己的理想渐行渐远，怕有一天完全忘记旧日那个意气风发的少年。</p>
-<p>于是追随着逃离北上广的浪潮，来到了杭州，这在一年前，甚至于几个月前都是一直没有考虑过得事情，就这样发生了。新的环境，新的生活，需要自己去适应，去把握，希望这一次我可以面对一切更加成熟。</p>
+<li><p>适用于大量数据的位图信息标记，例如如果要标记大量用户的某个状态值，可以考虑使用bitmap</p>
+</li>
+<li><p>bitmap的另外一个应用是基于redis的<a href="https://github.com/Baqend/Orestes-Bloomfilter" target="_blank" rel="noopener">bloom filter</a></p>
 </li>
 </ul>
+</li>
+<li><p>stream</p>
+<p>Redis4开始提供的新的数据结构，可以理解成轻量级的kafka steam，主要解决了pub/sub无法保证通知处理成功和blocked list无法多个client消费的问题，具体点击<a href="https://redis.io/topics/streams-intro" target="_blank" rel="noopener">此处</a>查看topic。</p>
+</li>
+</ol>
+<p>如果想实现一个简单的聊天室，可以尝试下steam。</p>
+<h2 id="使用建议"><a href="#使用建议" class="headerlink" title="使用建议"></a>使用建议</h2><ol>
+<li><p>合理分配过期时间<br>不管是将Redis作为缓存，还是存储，如果不愿意看到内存被慢慢消耗殆尽，最后只能扩容或者人工介入，就给自己的key设置一个合理的过期时间。<br> 当把Redis作为缓存时，更要预估自己的数据量和数据大小，选择一个合理的过期时间。</p>
+</li>
+<li><p>多个操作使用pinepine</p>
 <ul>
-<li><p>看了很多的书</p>
-<p>从16年至17年中强迫自己花更多的时间在阅读，上学时候犹记得各种名言警句：读书使人明智，书是人类进步的阶梯等等，直到今日才明白其真正的意义，真理往往隐藏在那些平淡无奇的话语中，不禁感慨道真正理解那些平淡无奇的真理如同大智若愚一样，是多么难得一件事情。</p>
-<p>读了《中国通史》，才知道在时间面前，个体是多么的渺小；读了哲学入门的书籍，开始去思考生存与生活的真正意义；读自我管理的书籍，加强自我驱动力，目标感；看经济学，让自己遇到问题有新的角度看待问题；学会关注社会问题，而不是自我隔离，这样的逃避最终只能让自己成为一个愤世嫉俗，不善言谈，思维简单的独立个体，我无时无刻不处在在一个大的社会，也必须用一个社会个体的身份和社会相处。</p>
-<p>开始学习分布式，像发现新大陆一样，不断探索新的知识；重新认识并发编程，不论是抽象的理论，清晰的代码，让自己从一个更高的角度构筑知识体系；重新读了一遍《如何阅读一本书》，试着写读书笔记，做技术总结，一点点的进步。下一步需要开始写博客，用文字记录下生活的轨迹。</p>
+<li><p>这是Redis使用中的一项基本原则，同时需要知道，另外如果下一个命令的input基于上一个命令的output，就不可以放到一个pipeline里面执行了</p>
+</li>
+<li><p>使用时考虑pipeline中一个命令执行失败的场景，后面的命令未执行是否因为一致性带来问题</p>
 </li>
 </ul>
-<ul>
-<li><p>重新认识了自己</p>
-<p>我深知自己身上的种种弊病，缺一直不愿意去做出改变，像是每一次改变都要经历极大的切肤之痛，也让自己总是通过麻木自己来逃避一些问题，直到淡出生活抑或用一种快刀斩乱麻的方式迅速处理掉，至此便可以永远抛之脑后。总的来说，我是一个不会独立处理问题的人。今日的种种性格和往日的生活经历密不可分，儿时的经历，上学时遗留的某些挫败感似乎还久久盘旋在脑海上空，所以当别人揭我短，戳我痛处，便会种恨之入骨，记恨在心，哈哈哈，竟讲自己描绘的如此可怜……；犹记得自己和朋友交谈时说着自己不愿意去过那种一眼望到头的日子，可回想近五年的时光，虽然已经时快时慢的在成长，更多的时候却像极了自己口中一眼望到头的那般讽刺，这也是自己为何让自己学会自我管理，重新塑造自己，跟过去那个丑陋不堪的自己说No。</p>
 </li>
-</ul>
+<li><p>使用命名空间</p>
 <ul>
-<li><p>写在2018年初</p>
-<p>犹记得大四那年，无意间翻到自己大一时在一个傍晚时分，独自在宿舍开着台灯，拿出一张白纸，上面记录着当初自己给大学四年的种种美好的规划，那时的我还是个充满梦想和憧憬的少年，而四年后的回想起当年的自己竟惊讶到羞愧。往时今日，何曾相似，除了生活更加残酷，但不甘心的我，偏要用一个更美好的自己面对不美好的现实。希望2018年的自己如同当年的追梦少年，出走多年，不忘初心。</p>
-</li>
+<li>方便key的管理，我们开发中常用的redis-desktop客户端能够按照命名空间对key进行展示，另外，命名空间方便需要对某一类key进行统计和管理</li>
+<li>如果需要通过key进行分片，命名空间可以作为分片参数</li>
 </ul>
+</li>
+<li><p>选用合适的数据结构 </p>
+<ul>
+<li>理解每个数据结构的用途，和常用的命令，我曾经见过开发人员因为不知道scard命令可以获得set的size，而将所有的元素取出然后在程序中计算，所以需要平时多查看<a href="https://redis.io/commands" target="_blank" rel="noopener">Redis命令文档</a>；如果能够理解每种数据结构背后的原理，使用时会更加得心应手。</li>
+<li>不建议使用Redis缓存单个数据大小较大的对象，尤其是使用Set，Hash此类数据结构时候，考虑到Redis是单线程，过多的大对象访问增加了网络IO压力，对Redis性能有一定影响，另一方面Redis的虚拟内存page较小，如果内存碎片率较高，则分配/申请内存时在性能上有些影响。如果要缓存较大的对象，可以考虑memcache</li>
+</ul>
+</li>
+<li><p>禁用keys<br>很基本的Redis使用常识，可以通过rename-command来将一些类似的命令重命名，实现disable的效果</p>
+</li>
+<li><p>选用lua script<br> 如果要保证多个操作的原子性，可以选择使用lua脚本</p>
+</li>
+<li><p>config set parameter value<br> redis 2.0后提供了config set 命令来动态修改一些运行参数而不必重启redis，目前已经支持动态修改maxmemory，可以通过CONFIG GET * 查看支持动态修改的参数列表</p>
+</li>
+<li><p>注意O(N)命令</p>
+<p> 对于有些O(N)级别的命令例如hgetall,smembers,sinter等在使用过程中需要注意对应数据结构中元素的个数，尤其是在元素数较多时候如果需要遍历，应该避免使用以上命令，改用hscan，sscan和scan等命令</p>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2></li>
+<li><p>key的命名<br>合理的命名自己的key，不能在查看数据时可读性更强，也更便于统计和管理</p>
+</li>
+<li><p>key name的长度<br>预估key的存活数量，如果key的数量可能达到百万级别，就需要考虑key的名字过长而导致占用太多的存储空间，我在曾经参与过的一个消息系统中使用redis存储消息阅读量，但是后面由于消息量过多，导致name的占用空间达到几百M，如果精简name，可以节省大量的空间，减少不必要的困扰。<br>例如，保存用户的基本信息可以使用u:${id}</p>
+</li>
+<li><p>不滥用Lua Script<br>由于Redis是单线程，在QPS很高的情况下，过多的lua脚本执行，特别是内部包含较多业务逻辑处理的情况下，会对Redis性能产生很大的影响。曾经参与过的直播业务的生产环境中，我们在Lua脚本中对送礼物触发的的积分和活动信息的有较多的逻辑处理（20行左右），导致Redis负载100%，所以在排查时Lua脚本有可能是负载较高的元凶之一。</p>
+</li>
+<li><p>关注内存和slowlog等统计数据</p>
+<ul>
+<li>通过info memory查看内存的分配和使用大小，碎片等情况</li>
+<li>slowlog get N 查看最近几条执行较慢的命令</li>
+<li>通过redis-cli –bigkeys 通过采样scan元素较多的key，不会一直阻塞redis执行</li>
+<li>更多好玩的redis-cli命令可以查看<a href="https://redis.io/topics/rediscli" target="_blank" rel="noopener">此处</a></li>
+</ul>
+</li>
+<li><p>完善中。。。。</p>
+<p>面对一款优秀开源产品，我们除了要了解它的基本使用，也要擅于运用才能更好发挥其作用，否则会有不必要的麻烦，甚至适得其反。当然如果能深入了解其内部运行机制，知其然并知其所以然，并基于此创造出更加优秀的开源产品，就更符合coder的hacker精神。</p>
+</li>
+</ol>
 
       
     </div>
@@ -513,11 +557,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/个人/" rel="tag"># 个人</a>
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
           
-            <a href="/tags/生活/" rel="tag"># 生活</a>
-          
-            <a href="/tags/年度/" rel="tag"># 年度</a>
+            <a href="/tags/Best-Practice/" rel="tag"># Best-Practice</a>
           
         </div>
       
@@ -530,14 +572,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/11/25/summary_about_linux_zero_copy/" rel="next" title="关于Zero Copy的一些简单总结">
+                <i class="fa fa-chevron-left"></i> 关于Zero Copy的一些简单总结
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/04/03/redis-distribute-lock/" rel="prev" title="Redis分布式锁进化史">
-                Redis分布式锁进化史 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/12/26/awesome-tools-and-libraries/" rel="prev" title="Awesome">
+                Awesome <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -590,8 +636,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -705,6 +760,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#特性"><span class="nav-number">1.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用建议"><span class="nav-number">2.</span> <span class="nav-text">使用建议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最佳实践"><span class="nav-number">3.</span> <span class="nav-text">最佳实践</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
@@ -842,9 +914,9 @@
   
     <script>
       var disqus_config = function () {
-        this.page.url = "http://jaryur.github.io/2018/01/01/to-my-2017/";
-        this.page.identifier = "2018/01/01/to-my-2017/";
-        this.page.title = '写给不平凡的2017';
+        this.page.url = "http://jaryur.github.io/2018/12/01/practicing_tips_for_redis/";
+        this.page.identifier = "2018/12/01/practicing_tips_for_redis/";
+        this.page.title = 'Redis实践中的一些总结和建议';
         };
       function loadComments () {
         var d = document, s = d.createElement('script');

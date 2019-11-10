@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。 几种IO介绍Linux">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Zero Copy的一些简单总结">
+<meta property="og:url" content="http://jaryur.github.io/2018/11/25/summary_about_linux_zero_copy/index.html">
+<meta property="og:site_name" content="山中小屋">
+<meta property="og:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。 几种IO介绍Linux">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://jaryur.github.io/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
+<meta property="og:image" content="http://jaryur.github.io/images/4ee3c66cc829db7ce5141cc3f36da35e.jpeg">
+<meta property="og:image" content="http://jaryur.github.io/images/1543750730518.jpg">
+<meta property="og:image" content="http://jaryur.github.io/images/37c15098760b7d8cd0e9d974ddd2b46d.jpeg">
+<meta property="og:image" content="http://jaryur.github.io/images/180879d0ee95d3b22f9061b46cdabb13.jpeg">
+<meta property="og:updated_time" content="2019-09-25T02:24:48.989Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于Zero Copy的一些简单总结">
+<meta name="twitter:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。 几种IO介绍Linux">
+<meta name="twitter:image" content="http://jaryur.github.io/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://jaryur.github.io/2018/11/25/summary_about_linux_zero_copy/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>关于Zero Copy的一些简单总结 | 山中小屋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">山中小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">博学之，审问之，慎思之，明辨之，笃行之</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jaryur.github.io/2018/11/25/summary_about_linux_zero_copy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="程先森">
+      <meta itemprop="description" content="博学之，审问之，慎思之，明辨之，笃行之">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="山中小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于Zero Copy的一些简单总结
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-25 16:00:34" itemprop="dateCreated datePublished" datetime="2018-11-25T16:00:34+08:00">2018-11-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-25 10:24:48" itemprop="dateModified" datetime="2019-09-25T10:24:48+08:00">2019-09-25</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/25/summary_about_linux_zero_copy/#comments" itemprop="discussionUrl">
+                
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/11/25/summary_about_linux_zero_copy/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。</p>
+<h2 id="几种IO介绍"><a href="#几种IO介绍" class="headerlink" title="几种IO介绍"></a>几种IO介绍</h2><h3 id="Linux中文件访问的几种方式"><a href="#Linux中文件访问的几种方式" class="headerlink" title="Linux中文件访问的几种方式"></a>Linux中文件访问的几种方式</h3><ol>
+<li><p>标准文件访问 （缓存IO）<br>用户访问磁盘中数据时，通常通过read()或者write()调用完成，操作系统会先将数据读取或者写入到page cache中，然后再写入磁盘，Linux默认写入磁盘方式为deferred write </p>
+<p><img src="/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg" alt> </p>
+</li>
+<li><p>同步访问 </p>
+<p>相对于标准访问方式，同步访问需要在写入磁盘后才返回，而标准访问可以在写入page cache后就返回 </p>
+</li>
+<li><p>内存映射<br>Linux通过将一块内存区域和一个外部设备或者文件关联起来，操作系统将对内存的操作映射为对外部设备或文件的操作，Linux提供了mmap </p>
+<p><img src="/images/4ee3c66cc829db7ce5141cc3f36da35e.jpeg" alt> </p>
+</li>
+<li><p>直接访问（直接IO）</p>
+<p>直接在用户空间访问文件，不需要内核空间的page cache支持，对于一些通过应用程序自身进行缓存控制的程序（例如数据库）比较适用<br><img src="/images/1543750730518.jpg" alt></p>
+</li>
+<li><p>异步访问 </p>
+<p>用户程序在写入或者读取磁盘数据时无需阻塞，由操作系统异步，提升了用户程序的效率 </p>
+<p><img src="/images/37c15098760b7d8cd0e9d974ddd2b46d.jpeg" alt> </p>
+</li>
+</ol>
+<h3 id="缓存IO和直接IO对比"><a href="#缓存IO和直接IO对比" class="headerlink" title="缓存IO和直接IO对比"></a>缓存IO和直接IO对比</h3><p>缓存IO需要由DMA将文件数据读入到page cache，然后通过page cache读取数据，如果一个文件需要频繁访问，能够减少文件直接访问次数，但是在大量文件访问的程序中，存在很多用户程序，内核page cache和磁盘文件的数据copy，就会带来很高的cpu负载。</p>
+<h3 id="如何进行直接IO调用"><a href="#如何进行直接IO调用" class="headerlink" title="如何进行直接IO调用"></a>如何进行直接IO调用</h3><p>linux中文件操作主要通过read(),write(),open()这三个操作完成，在函数操作中通过O_DIRECT标识符完成 </p>
+<h3 id="直接IO的使用场景"><a href="#直接IO的使用场景" class="headerlink" title="直接IO的使用场景"></a>直接IO的使用场景</h3><p>由于直接IO调用减少了数据的copy次数，对于一些需要大量数据复制（到内存或者网络）或者对数据缓存能够通过应用控制（例如数据库）的场景，会有很大的性能提升 </p>
+<h2 id="Zero-Copy"><a href="#Zero-Copy" class="headerlink" title="Zero Copy"></a>Zero Copy</h2><p>Linux 　中传统的 I/O 操作是一种缓冲 I/O，I/O 过程中产生的数据传输通常需要在缓冲区中进行多次的拷贝操作，例如一次网络请求中，如果需要读取磁盘文件，需要经过四次copy过程和多次的内核和用户态的上下文切换，下面是一次传统web请求中，从磁盘读取数据到返回数据结果的过程中数据在内存中的copy过程 </p>
+<p><img src="/images/180879d0ee95d3b22f9061b46cdabb13.jpeg" alt> </p>
+<p>也可以通过<a href="https://developer.ibm.com/articles/j-zerocopy/" target="_blank" rel="noopener">Efficient data transfer through zero copy</a>这篇文章详细了解 </p>
+<p>zero copy技术可以避免数据的多次copy，减少不必要的上下文切换（内核态和用户态），降低CPU的资源浪费，尤其在处理大量网络请求的应用中，zero copy显得更加重要。 </p>
+<h3 id="linux中zero-copy实现方式主要实现方式"><a href="#linux中zero-copy实现方式主要实现方式" class="headerlink" title="linux中zero copy实现方式主要实现方式"></a>linux中zero copy实现方式主要实现方式</h3><ol>
+<li><p>直接IO技术（减少page cache） </p>
+</li>
+<li><p>从page cache 直接copy到目标缓冲区 </p>
+</li>
+<li><p>mmap()：应用程序调用了 mmap() 之后，数据会先通过 DMA 拷贝到操作系统内核的缓冲区中去。接着，应用程序跟操作系统共享这个缓冲区，适用于大数据范围的copy，但是当多个进行修改时，会收到一个SIGBUS中断信号，而且必须有效的解决才能避免一些问题。 </p>
+</li>
+<li><p>sendfile()：sendfile() 系统调用利用 DMA 引擎将文件中的数据拷贝到操作系统内核缓冲区中，然后数据被拷贝到与 socket 相关的内核缓冲区中去 </p>
+</li>
+<li><p>splice()：Linux2.6.17引入，和sendFile机制类似，但是可以在fin和fout之间互相copy数据，而不是单向。 </p>
+</li>
+<li><p>copy-on-write：多个进程共享一块buffer，当一个进程需要修改buffer数据时，会将buffer数据copy到进行内存单独修改，COW技术通过读共享内存减少了内存的copy </p>
+</li>
+<li><p>通过硬件的支持，直接从kernel buffer到网卡等终端，减少了一次kernel buffer 到socket buffer的copy </p>
+</li>
+</ol>
+<h3 id="Java中的Zero-Copy"><a href="#Java中的Zero-Copy" class="headerlink" title="Java中的Zero Copy"></a>Java中的Zero Copy</h3><ol>
+<li>通过<strong>java.nio.channels.FileChannel</strong>的<strong>transferTo()</strong>可以实现zero copy，在linux类系统中，transferTo调用了操作系统splice()方法，下面一个图是传统 Java copy API和 FileChannel zero copy的耗时比较，大约有65%的性能提升 </li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>File size</th>
+<th>Normal file transfer (ms)</th>
+<th>transferTo (ms)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7MB</td>
+<td>156</td>
+<td>45</td>
+</tr>
+<tr>
+<td>21MB</td>
+<td>337</td>
+<td>128</td>
+</tr>
+<tr>
+<td>63MB</td>
+<td>843</td>
+<td>387</td>
+</tr>
+<tr>
+<td>98MB</td>
+<td>1320</td>
+<td>617</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>2124</td>
+<td>1150</td>
+</tr>
+<tr>
+<td>350MB</td>
+<td>3631</td>
+<td>1762</td>
+</tr>
+<tr>
+<td>700MB</td>
+<td>13498</td>
+<td>4422</td>
+</tr>
+<tr>
+<td>1GB</td>
+<td>18399</td>
+<td>8537</td>
+</tr>
+</tbody></table>
+<ol start="2">
+<li><p>通过<strong>java.nio.channels.FileChannel</strong>的<strong>(MapMode mode,long position, long size)</strong>实现mmap，相对于传统的BIO等文件操作尤其是大文件的读写，性能有较大的提升。</p>
+<blockquote>
+<p>Java 原生API目前没有Direct IO的实现，目前gitlab上有<a href="https://github.com/java-native-access/jna" target="_blank" rel="noopener">JNA</a>的库，可以基于此库实现Linux DirectIO</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="Zero-Copy的实际应用场景"><a href="#Zero-Copy的实际应用场景" class="headerlink" title="Zero Copy的实际应用场景"></a>Zero Copy的实际应用场景</h2><ol>
+<li>Nginx，在Nginx性能优化中，有一个配置是sendfile on/off,以下是官方文档的说明 </li>
+</ol>
+<blockquote>
+<p>By default, NGINX handles file transmission itself and copies the file into the buffer before sending it. Enabling the sendfile directive eliminates the step of copying the data into the buffer and enables direct copying data from one file descriptor to another </p>
+</blockquote>
+<p>当nginx在处理静态资源请求时，开启sendfile对性能有一定的提升，当然还需要根据实际场景，结合其他配置使用。可以通过<a href="https://thoughts.t37.net/nginx-optimization-understanding-sendfile-tcp-nodelay-and-tcp-nopush-c55cdd276765" target="_blank" rel="noopener">Optimisations Nginx, bien comprendre sendfile, tcpnodelay et tcpnopush</a>详细了解 </p>
+<ol start="2">
+<li><p><strong>C10k</strong>问题的解决中，Zero Copy对于IO的提升是一个关键点，具体可以通过<a href="http://www.kegel.com/c10k.html#top" target="_blank" rel="noopener">The C10K problem</a>查看 </p>
+</li>
+<li><p>Kafka,Netty,RocketMQ等中间件 </p>
+<p>消息中间件中对于消息持久化通常保存在文件中，对于一个高吞吐量的消息中间件，对文件读写通常采用以下方案（Java为例）</p>
+<ul>
+<li><p>NIO：主要在java.nio包中，通过FileChannel相关方法实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FileChannel fileChannel = <span class="keyword">new</span> RandomAccessFile(<span class="keyword">new</span> File(<span class="string">"message.data"</span>), <span class="string">"rw"</span>).getChannel();</span><br><span class="line"><span class="comment">//然后通过read和write方法写入数据</span></span><br><span class="line">fileChannel.read(ByteBuffer[] dsts, <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span><br><span class="line">fileChannel.write(ByteBuffer[] srcs, <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>MMAP</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MappedByteBuffer mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, filechannel.size();</span><br></pre></td></tr></table></figure>
+
+<p>RocketMQ默认采用异步mmap的方式实现消息刷盘</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>参考资料 </p>
+<p><a href="https://www.linuxjournal.com/article/6345" target="_blank" rel="noopener">Zero Copy I: User-Mode Perspective</a> </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/03/redis-distribute-lock/" rel="next" title="Redis分布式锁进化史">
+                <i class="fa fa-chevron-left"></i> Redis分布式锁进化史
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/01/practicing_tips_for_redis/" rel="prev" title="Redis实践中的一些总结和建议">
+                Redis实践中的一些总结和建议 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">程先森</p>
+              <p class="site-description motion-element" itemprop="description">博学之，审问之，慎思之，明辨之，笃行之</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#几种IO介绍"><span class="nav-number">2.</span> <span class="nav-text">几种IO介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux中文件访问的几种方式"><span class="nav-number">2.1.</span> <span class="nav-text">Linux中文件访问的几种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存IO和直接IO对比"><span class="nav-number">2.2.</span> <span class="nav-text">缓存IO和直接IO对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何进行直接IO调用"><span class="nav-number">2.3.</span> <span class="nav-text">如何进行直接IO调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直接IO的使用场景"><span class="nav-number">2.4.</span> <span class="nav-text">直接IO的使用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zero-Copy"><span class="nav-number">3.</span> <span class="nav-text">Zero Copy</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux中zero-copy实现方式主要实现方式"><span class="nav-number">3.1.</span> <span class="nav-text">linux中zero copy实现方式主要实现方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java中的Zero-Copy"><span class="nav-number">3.2.</span> <span class="nav-text">Java中的Zero Copy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zero-Copy的实际应用场景"><span class="nav-number">4.</span> <span class="nav-text">Zero Copy的实际应用场景</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">程先森</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+  
+
+  
+    <script>
+      var disqus_config = function () {
+        this.page.url = "http://jaryur.github.io/2018/11/25/summary_about_linux_zero_copy/";
+        this.page.identifier = "2018/11/25/summary_about_linux_zero_copy/";
+        this.page.title = '关于Zero Copy的一些简单总结';
+        };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
