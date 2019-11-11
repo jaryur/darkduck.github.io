@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="山中小屋">
 <meta property="og:description" content="本文是我之前发表在其他网站的博客，近期统一迁移到个人博客并重新编辑后发布  最近在阅读《Java并发编程实战》，在关于Java内存模型-重排序章节，重新提到了一直以来未很有困惑性的问题。书中给出的例子是  int a,b,x,y=0  在ThreadA中的操作为   a = 1; x = b;  在另外一个线程ThreadB中的操作为  b = 1;y = a;  最后在两个线程分别start后">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-09-12T07:24:05.905Z">
+<meta property="og:updated_time" content="2019-11-10T07:46:08.256Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java中的Happens-Before，重排序和DCL问题">
 <meta name="twitter:description" content="本文是我之前发表在其他网站的博客，近期统一迁移到个人博客并重新编辑后发布  最近在阅读《Java并发编程实战》，在关于Java内存模型-重排序章节，重新提到了一直以来未很有困惑性的问题。书中给出的例子是  int a,b,x,y=0  在ThreadA中的操作为   a = 1; x = b;  在另外一个线程ThreadB中的操作为  b = 1;y = a;  最后在两个线程分别start后">
@@ -404,7 +404,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-09-12 15:24:05" itemprop="dateModified" datetime="2019-09-12T15:24:05+08:00">2019-09-12</time>
+                <time title="修改时间：2019-11-10 15:46:08" itemprop="dateModified" datetime="2019-11-10T15:46:08+08:00">2019-11-10</time>
               
             
           </span>
@@ -698,8 +698,6 @@
                     
                       
                     
-                      
-                    
                     <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
@@ -941,6 +939,32 @@
 
 
 
+
+
+  
+  
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.js"></script>
+
+  
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.css">
+
+  
+  
+  <script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+   <script>
+        var gitalk = new Gitalk({
+          clientID: 'd6267793b801f5f88d25',
+          clientSecret: '78564b208baa772ea7a1a2a298a4af6355c9a1af',
+          repo: 'jaryur.github.io',
+          owner: 'jaryur',
+          admin: ['jaryurchang'],
+          id: md5(location.pathname),
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+       </script>
 
 
   
