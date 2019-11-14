@@ -100,27 +100,27 @@
 <meta name="keywords" content="Linux">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于Zero Copy的一些简单总结">
-<meta property="og:url" content="http://jaryur.github.io/2018/11/25/summary_about_linux_zero_copy/index.html">
+<meta property="og:url" content="http://overflower.github.io/2018/11/25/summary_about_linux_zero_copy/index.html">
 <meta property="og:site_name" content="Throughts Overflow">
 <meta property="og:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。 几种IO介绍Linux">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://jaryur.github.io/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
-<meta property="og:image" content="http://jaryur.github.io/images/4ee3c66cc829db7ce5141cc3f36da35e.jpeg">
-<meta property="og:image" content="http://jaryur.github.io/images/1543750730518.jpg">
-<meta property="og:image" content="http://jaryur.github.io/images/37c15098760b7d8cd0e9d974ddd2b46d.jpeg">
-<meta property="og:image" content="http://jaryur.github.io/images/180879d0ee95d3b22f9061b46cdabb13.jpeg">
+<meta property="og:image" content="http://overflower.github.io/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
+<meta property="og:image" content="http://overflower.github.io/images/4ee3c66cc829db7ce5141cc3f36da35e.jpeg">
+<meta property="og:image" content="http://overflower.github.io/images/1543750730518.jpg">
+<meta property="og:image" content="http://overflower.github.io/images/37c15098760b7d8cd0e9d974ddd2b46d.jpeg">
+<meta property="og:image" content="http://overflower.github.io/images/180879d0ee95d3b22f9061b46cdabb13.jpeg">
 <meta property="og:updated_time" content="2019-09-25T02:24:48.989Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于Zero Copy的一些简单总结">
 <meta name="twitter:description" content="前言最近工作中一个系统要基于cannal订阅binlog数据，然后本地消费，但是发现IO居高不下，通常情况达到150%以上，顺着这个问题阅读了canal中关于网络数据处理的源码，发现性能并不是好，后面不得不切换到改用kafka消费，而kafka作为一个高性能消息处理中间件能够实现海量消息处理的一个因素是因为Zero Copy，借此机会重新总结了下Linux下IO的一些知识。 几种IO介绍Linux">
-<meta name="twitter:image" content="http://jaryur.github.io/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
+<meta name="twitter:image" content="http://overflower.github.io/images/a61bc2af162ac4fd42c57992248e9b5b.jpeg">
 
 
 
 
 
 
-  <link rel="canonical" href="http://jaryur.github.io/2018/11/25/summary_about_linux_zero_copy/">
+  <link rel="canonical" href="http://overflower.github.io/2018/11/25/summary_about_linux_zero_copy/">
 
 
 
@@ -350,7 +350,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://jaryur.github.io/2018/11/25/summary_about_linux_zero_copy/">
+    <link itemprop="mainEntityOfPage" href="http://overflower.github.io/2018/11/25/summary_about_linux_zero_copy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Overflower">
